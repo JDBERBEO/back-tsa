@@ -15,6 +15,8 @@ const UserSchema: Schema = new Schema({
   password: {type: String, required: true}
 });
 
+
+// TODO: pre save function, password and email Regex
 const Admin: Model<Admin> = model('User', UserSchema);
 
 export default Admin
