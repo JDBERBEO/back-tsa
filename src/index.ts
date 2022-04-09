@@ -1,12 +1,11 @@
 import express, {Application, Request, Response} from 'express';
-const connect = require("./dataBase");
+import connect from "./dataBase";
+import adminRouter from "./routes/routes";
 
 const app: Application = express();
 connect()
 
-app.get('/', (req: Request, res:Response) => {
-    res.send('Well done!');
-})
+app.use("/administrator", adminRouter);
 
 
 app.listen(3000, () => {

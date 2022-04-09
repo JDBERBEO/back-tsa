@@ -10,10 +10,9 @@ function connect() {
     .then(() => {
       console.log("Connection established successfully");
     })
-    // TODO: Type the error 
-    .catch((error: any) => {
+    .catch((error: Error) => {
       console.log("Something went wrong", error);
     });
 }
 
-module.exports = connect;
+export default connect;
