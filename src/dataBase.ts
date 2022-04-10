@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 function connect() {
-  const mongoURI = process.env.MONGO_URI || "mongodb://localhost:27017/roomatch";
+  const mongoURI = process.env.MONGO_URI || "mongodb://localhost:27017/me-retracto";
   const options = {
     useNewUrlParser: true,
     useUnifiedTopology: true,

@@ -1,16 +1,12 @@
 const adminRouter = require("express").Router();
+import { getContracts, uploadContract, deleteContract } from '../controllers/adminControllers'
 import { Request, Response } from "express"
 
 
-adminRouter.get('/', (request:Request , response: Response) => {
-  response.send( 'hola');
-});
-adminRouter.post('/', (request:Request , response: Response) => {
-  response.send( 'hola desde post');
-});
-adminRouter.delete('/', (request:Request , response: Response) => {
-  response.send( 'hola desde delete');
-});
+adminRouter.get('/', getContracts)
 
-// TODO: Creat auth middleware 
+adminRouter.post('/', uploadContract);
+adminRouter.delete('/', deleteContract);
+
+// TODO: Create auth middleware 
 export default adminRouter;

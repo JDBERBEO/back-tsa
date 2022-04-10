@@ -2,6 +2,10 @@ import express, {Application, Request, Response} from 'express';
 import connect from "./dataBase";
 import adminRouter from "./routes/routes";
 
+import dotenv from 'dotenv'; 
+
+dotenv.config()
+
 const app: Application = express();
 connect()
 
