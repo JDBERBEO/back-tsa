@@ -1,9 +1,8 @@
 const adminRouter = require("express").Router();
-import { getContracts, uploadClaim, deleteContract } from '../controllers/adminControllers'
-import { Request, Response } from "express"
+import { getClaims, uploadClaim, deleteContract } from '../controllers/adminControllers'
 
 
-adminRouter.get('/', getContracts)
+adminRouter.get('/', getClaims)
 adminRouter.post('/', uploadClaim);
 adminRouter.delete('/', deleteContract);
 

@@ -12,10 +12,10 @@ cloudinary.config({
 });
 
 
-export const getContracts = async (request:Request , response: Response) => {
+export const getClaims = async (request:Request , response: Response) => {
   try {
-    response.send('Funciona perro')
-
+    const claims = await Claim.find()
+    response.status(200).json(claims)
   } catch (error: any) {
     // TODO: Type error
     response.send('error')
