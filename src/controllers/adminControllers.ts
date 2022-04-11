@@ -12,13 +12,13 @@ cloudinary.config({
 });
 
 
-export const getClaims = async (request:Request , response: Response) => {
+export const getClaims = async (req:Request , res: Response) => {
   try {
     const claims = await Claim.find()
-    response.status(200).json(claims)
+    res.status(200).json(claims)
   } catch (error: any) {
     // TODO: Type error
-    response.send('error')
+    res.send('error')
     console.log('error: ', error)
   }
 }
@@ -44,6 +44,23 @@ export const uploadClaim = async (req:Request , res: Response) => {
     }
 }
 
-export const deleteContract = async (request:Request , response: Response) => {
-  response.send('hola desde deleteContract')
+export const deleteContract = async (req:Request , res: Response) => {
+  
+  try {
+    const { id } = req.params
+    console.log('reqParams ID: ', id)
+    // TODO: Specify type correctly
+    // TODO: Use query correctly to find ID and be deleted
+
+    const claim: any = await Claim.findByIdAndDelete(id)
+    console.log('claim: ', claim)
+    if (!claim) return
+  
+    await cloudinary.uploader.destroy(claim.fileUid)
+  
+    await claim.remove(id)
+    
+  } catch (error) {
+    console.log('error: ', error)
+  }
 }

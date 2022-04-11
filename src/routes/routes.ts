@@ -4,7 +4,7 @@ import { getClaims, uploadClaim, deleteContract } from '../controllers/adminCont
 
 adminRouter.get('/', getClaims)
 adminRouter.post('/', uploadClaim);
-adminRouter.delete('/', deleteContract);
+adminRouter.delete('/:id', deleteContract);
 
 // TODO: Create auth middleware 
 export default adminRouter;
