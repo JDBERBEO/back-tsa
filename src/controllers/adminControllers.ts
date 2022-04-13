@@ -45,7 +45,7 @@ export const uploadClaim = async (req:Request , res: Response) => {
     }
 }
 
-export const deleteContract = async (req:Request , res: Response) => {
+export const deleteClaim = async (req:Request , res: Response) => {
   
   try {
 
