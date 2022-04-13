@@ -1,17 +1,16 @@
-const mongoose = require("mongoose");
+// const mongoose = require('mongoose');
+import mongoose from 'mongoose';
+
 function connect() {
-  const mongoURI = process.env.MONGO_URI || "mongodb://localhost:27017/me-retracto";
-  const options = {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  };
+  const mongoURI =
+    process.env.MONGO_URI || 'mongodb://localhost:27017/me-retracto';
   mongoose
-    .connect(mongoURI, options)
+    .connect(mongoURI)
     .then(() => {
-      console.log("Connection established successfully");
+      console.log('Connection established successfully');
     })
     .catch((error: Error) => {
-      console.log("Something went wrong", error);
+      console.log('Something went wrong', error);
     });
 }
 
