@@ -32,7 +32,8 @@ export const uploadClaim = async (req:Request , res: Response) => {
     
       let file = req.files.file as UploadedFile
       const fileResp = await cloudinary.uploader.upload(file.tempFilePath, { resource_type: 'auto' })
-   
+      console.log('file: ', fileResp)
+
       body.fileUrl = fileResp.secure_url
       body.fileUid = fileResp.public_id
 
@@ -47,19 +48,17 @@ export const uploadClaim = async (req:Request , res: Response) => {
 export const deleteContract = async (req:Request , res: Response) => {
   
   try {
-    const { id } = req.params
-    console.log('reqParams ID: ', id)
-    // TODO: Specify type correctly
-    // TODO: Use query correctly to find ID and be deleted
 
-    const claim: any = await Claim.findByIdAndDelete(id)
-    console.log('claim: ', claim)
-    if (!claim) return
-  
-    await cloudinary.uploader.destroy(claim.fileUid)
-  
-    await claim.remove(id)
+    const { id } = req.params;
+    const claim = await Claim.findById({_id: id});
+   
+
+    if (!claim) return 
     
+    await cloudinary.uploader.destroy(claim.fileUid, {type: 'upload', resource_type: 'raw'})
+
+    await claim.delete()
+    res.status(204).send()
   } catch (error) {
     console.log('error: ', error)
   }
