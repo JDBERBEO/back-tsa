@@ -1,6 +1,7 @@
 import express, { Application } from 'express';
 import connect from './dataBase';
-import adminRouter from './routes/routes';
+import adminRouter from './routes/adminRoutes';
+import customerRouter from './routes/customerRoutes';
 import cors from 'cors';
 import fileUpload from 'express-fileupload';
 import dotenv from 'dotenv';
@@ -21,6 +22,7 @@ app.use(
 );
 
 app.use('/administrator', adminRouter);
+app.use('/customer', customerRouter);
 
 app.listen(3000, () => {
   console.log('The application is listening on port 3000!');
