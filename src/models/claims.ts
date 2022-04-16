@@ -13,11 +13,10 @@ const ClaimSchema: Schema = new Schema({
   name: { type: String, required: true },
   internalCode: { type: String, required: true },
   fileUrl: { type: String, required: true },
-  fileUid: {type: String, required: true},
-  timestamps: {type: Boolean, required: true, default: true},
+  fileUid: { type: String, required: true },
+  timestamps: { type: Boolean, required: true, default: true },
 });
-
 
 const Claim: Model<Claim> = model('User', ClaimSchema);
 
-export default Claim
+export default Claim;
