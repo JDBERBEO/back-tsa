@@ -1,4 +1,3 @@
-// const adminRouter = require('express').Router();
 import express from 'express';
 import {
   getClaims,
@@ -6,7 +5,7 @@ import {
   deleteClaim,
 } from '../controllers/adminControllers';
 
-const adminRouter = express.Router()
+const adminRouter = express.Router();
 
 adminRouter.get('/', getClaims);
 adminRouter.post('/', uploadClaim);

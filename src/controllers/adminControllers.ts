@@ -30,7 +30,6 @@ export const uploadClaim = async (req: Request, res: Response) => {
     const fileResp = await cloudinary.uploader.upload(file.tempFilePath, {
       resource_type: 'auto',
     });
-    console.log('file: ', fileResp);
 
     body.fileUrl = fileResp.secure_url;
     body.fileUid = fileResp.public_id;
