@@ -28,7 +28,6 @@ export const getClaims = async (req: Request, res: Response) => {
 export const postClaimRender = async (req: Request, res: Response) => {
   const { id } = req.params;
   const { body } = req;
-  console.log('claimFiels: ', body.claimFields);
   const claim = await Claim.findById({ _id: id });
   //TODO: send error when claim is not found
   if (!claim) return;
