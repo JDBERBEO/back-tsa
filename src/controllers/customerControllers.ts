@@ -9,9 +9,9 @@ import Docxtemplater from 'docxtemplater';
 import https from 'https';
 
 cloudinary.config({
-  cloud_name: 'dj7wucuvf',
-  api_key: '227768484585757',
-  api_secret: 'hszEQeX9GlorieTDMebBrMySzjE',
+  cloud_name: 'me-retracto',
+  api_key: '381613826999381',
+  api_secret: 'zstNjnStRqq-2ATDWtK5_JJcPTI',
 });
 
 export const getClaims = async (req: Request, res: Response) => {
@@ -26,11 +26,13 @@ export const getClaims = async (req: Request, res: Response) => {
 };
 
 export const postClaimRender = async (req: Request, res: Response) => {
+  console.log('entro')
   const { id } = req.params;
   const { body } = req;
+  console.log('body: ', body)
   const claim = await Claim.findById({ _id: id });
   //TODO: send error when claim is not found
-  if (!claim) return;
+  if (!claim) return res.json({"error":"not found"});
 
   const file = fs.createWriteStream(path.resolve(__dirname, 'temp.docx'));
   await getFile(file, claim.fileUrl);

@@ -4,9 +4,9 @@ import { v2 as cloudinary } from 'cloudinary';
 import { UploadedFile } from 'express-fileupload';
 
 cloudinary.config({
-  cloud_name: 'dj7wucuvf',
-  api_key: '227768484585757',
-  api_secret: 'hszEQeX9GlorieTDMebBrMySzjE',
+  cloud_name: 'me-retracto',
+  api_key: '381613826999381',
+  api_secret: 'zstNjnStRqq-2ATDWtK5_JJcPTI',
 });
 
 export const getClaims = async (req: Request, res: Response) => {
