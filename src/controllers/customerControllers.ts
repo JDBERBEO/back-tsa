@@ -26,10 +26,8 @@ export const getClaims = async (req: Request, res: Response) => {
 };
 
 export const postClaimRender = async (req: Request, res: Response) => {
-  console.log('entro')
   const { id } = req.params;
   const { body } = req;
-  console.log('body: ', body)
   const claim = await Claim.findById({ _id: id });
   //TODO: send error when claim is not found
   if (!claim) return res.json({"error":"not found"});
@@ -62,7 +60,12 @@ export const postClaimRender = async (req: Request, res: Response) => {
   // buf is a nodejs Buffer, you can either write it to a file or res.send it with express for example.
   fs.writeFileSync(path.resolve(__dirname, 'output.docx'), buf);
 
-  res.json(claim);
+  try {
+    const newFile = await cloudinary.uploader.upload(path.resolve(__dirname, 'output.docx'), {resource_type: 'auto'})
+    res.json({"downloadUrl": newFile.url})
+  } catch (error) {
+    res.json(error)
+  }
 };
 
 async function getFile(file: any, url: any) {

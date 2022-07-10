@@ -6,16 +6,30 @@ interface Claim extends Document {
   fileUrl: string;
   fileUid: string;
   description: string;
-  timestamps: boolean;
 }
 
-const ClaimSchema: Schema = new Schema({
-  name: { type: String, required: true },
-  internalCode: { type: String, required: true },
-  fileUrl: { type: String, required: true },
-  fileUid: { type: String, required: true },
-  timestamps: { type: Boolean, required: true, default: true },
-});
+const ClaimSchema: Schema = new Schema(
+  {
+  name: { 
+    type: String, 
+    required: true 
+  },
+  internalCode: { 
+    type: String, 
+    required: true 
+  },
+  fileUrl: { 
+    type: String, 
+    required: true 
+  },
+  fileUid: { 
+    type: String, 
+    required: true 
+  },
+  },
+  {
+    timestamps: true,
+  });
 
 const Claim: Model<Claim> = model('User', ClaimSchema);
 

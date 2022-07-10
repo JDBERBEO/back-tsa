@@ -16,49 +16,36 @@ export const getClaims = async (req: Request, res: Response) => {
   } catch (error: any) {
     // TODO: Type error
     res.send('error');
-    console.log('error: ', error);
   }
 };
 
-export const uploadClaim = async (req: Request, res: Response) => {
-  try {
-    const { body } = req;
-
-    if (!req.files) return;
-
-    const file = req.files.file as UploadedFile;
-    const fileResp = await cloudinary.uploader.upload(file.tempFilePath, {
-      resource_type: 'auto',
-    });
-
-    body.fileUrl = fileResp.secure_url;
-    body.fileUid = fileResp.public_id;
-
-    const template = await Claim.create(body);
-    res.status(201).send({ template });
-  } catch (error) {
-    res.json({error: error})
-    //TODO: Send error
-    console.log('error: ', error);
-  }
-};
-
-export const deleteClaim = async (req: Request, res: Response) => {
+export const updateClaim = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const claim = await Claim.findById({ _id: id });
-
-    if (!claim) return;
+    if (!req.files) return res.json({"error":"file not found"}) ;
+    if (!claim) return res.json({"error":"claim not fond"}) ;
 
     await cloudinary.uploader.destroy(claim.fileUid, {
       type: 'upload',
       resource_type: 'raw',
     });
 
-    await claim.delete();
-    const claims = await Claim.find();
-    res.status(200).json(claims);
+
+    const file = req.files.file as UploadedFile;
+    const fileResp = await cloudinary.uploader.upload(file.tempFilePath, {
+      resource_type: 'auto',
+    });
+
+  
+    const template = await Claim.findByIdAndUpdate(id,   { fileUrl: fileResp.url, fileUid: fileResp.public_id },
+      {
+        new: true,
+      });
+    res.status(201).send({ template });
   } catch (error) {
+    res.json({error: error})
+    //TODO: Send error
     console.log('error: ', error);
   }
 };
