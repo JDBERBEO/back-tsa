@@ -7,6 +7,7 @@ import fs from 'fs';
 import PizZip from 'pizzip';
 import Docxtemplater from 'docxtemplater';
 import https from 'https';
+import Template from '../models/templates';
 
 cloudinary.config({
   cloud_name: 'me-retracto',
@@ -28,18 +29,20 @@ export const getClaims = async (req: Request, res: Response) => {
 export const postClaimRender = async (req: Request, res: Response) => {
   const { id } = req.params;
   const { body } = req;
-  const claim = await Claim.findById({ _id: id });
+  const template = await Template.findById({ _id: id });
   //TODO: send error when claim is not found
-  if (!claim) return res.json({"error":"not found"});
+  console.log('template: ', template)
+  if (!template) return res.json({"error":"not found"});
 
   const file = fs.createWriteStream(path.resolve(__dirname, 'temp.docx'));
-  await getFile(file, claim.fileUrl);
+  await getFile(file, template.fileUrl);
 
   const content = fs.readFileSync(
     path.resolve(__dirname, 'temp.docx'),
     'binary'
   );
-
+  
+  console.log('file: ', file)
   const zip = new PizZip(content);
 
   const doc = new Docxtemplater(zip, {
@@ -61,8 +64,17 @@ export const postClaimRender = async (req: Request, res: Response) => {
   fs.writeFileSync(path.resolve(__dirname, 'output.docx'), buf);
 
   try {
-    const newFile = await cloudinary.uploader.upload(path.resolve(__dirname, 'output.docx'), {resource_type: 'auto'})
-    res.json({"downloadUrl": newFile.url})
+    const claimUrl = await cloudinary.uploader.upload(path.resolve(__dirname, 'output.docx'), {resource_type: 'auto'})
+    console.log('claumIRl: ', claimUrl)
+    const newClaimBody = {
+      name: template.name,
+      internalCode: template.internalCode,
+      fileUrl: claimUrl.secure_url,
+      fileUid: claimUrl.public_id
+    }
+
+    const newClaim = await Claim.create(newClaimBody);
+    res.status(201).send({ newClaim });
   } catch (error) {
     res.json(error)
   }

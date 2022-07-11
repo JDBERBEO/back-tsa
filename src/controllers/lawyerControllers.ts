@@ -20,9 +20,13 @@ export const getClaims = async (req: Request, res: Response) => {
 };
 
 export const updateClaim = async (req: Request, res: Response) => {
+  
   try {
     const { id } = req.params;
     const claim = await Claim.findById({ _id: id });
+
+    console.log('claim: ', claim)
+    console.log('req.files: ', req)
     if (!req.files) return res.json({"error":"file not found"}) ;
     if (!claim) return res.json({"error":"claim not fond"}) ;
 

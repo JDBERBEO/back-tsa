@@ -1,4 +1,4 @@
-import Claim from '../models/claims';
+import Template from '../models/templates';
 import { Request, Response } from 'express';
 import { v2 as cloudinary } from 'cloudinary';
 import { UploadedFile } from 'express-fileupload';
@@ -9,10 +9,10 @@ cloudinary.config({
   api_secret: 'zstNjnStRqq-2ATDWtK5_JJcPTI',
 });
 
-export const getClaims = async (req: Request, res: Response) => {
+export const getTemplates= async (req: Request, res: Response) => {
   try {
-    const claims = await Claim.find();
-    res.status(200).json(claims);
+    const templates = await Template.find();
+    res.status(200).json(templates);
   } catch (error: any) {
     // TODO: Type error
     res.send('error');
@@ -20,7 +20,7 @@ export const getClaims = async (req: Request, res: Response) => {
   }
 };
 
-export const uploadClaim = async (req: Request, res: Response) => {
+export const uploadTemplate = async (req: Request, res: Response) => {
   try {
     const { body } = req;
 
@@ -34,7 +34,7 @@ export const uploadClaim = async (req: Request, res: Response) => {
     body.fileUrl = fileResp.secure_url;
     body.fileUid = fileResp.public_id;
 
-    const template = await Claim.create(body);
+    const template = await Template.create(body);
     res.status(201).send({ template });
   } catch (error) {
     res.json({error: error})
@@ -43,21 +43,21 @@ export const uploadClaim = async (req: Request, res: Response) => {
   }
 };
 
-export const deleteClaim = async (req: Request, res: Response) => {
+export const deleteTemplate = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const claim = await Claim.findById({ _id: id });
+    const template = await Template.findById({ _id: id });
 
-    if (!claim) return;
+    if (!template) return;
 
-    await cloudinary.uploader.destroy(claim.fileUid, {
+    await cloudinary.uploader.destroy(template.fileUid, {
       type: 'upload',
       resource_type: 'raw',
     });
 
-    await claim.delete();
-    const claims = await Claim.find();
-    res.status(200).json(claims);
+    await template.delete();
+    const templates = await Template.find();
+    res.status(200).json(templates);
   } catch (error) {
     console.log('error: ', error);
   }

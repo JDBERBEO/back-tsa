@@ -1,15 +1,15 @@
 import express from 'express';
 import {
-  getClaims,
-  uploadClaim,
-  deleteClaim,
+  getTemplates,
+  uploadTemplate,
+  deleteTemplate,
 } from '../controllers/adminControllers';
 
 const adminRouter = express.Router();
 
-adminRouter.get('/', getClaims);
-adminRouter.post('/', uploadClaim);
-adminRouter.delete('/:id', deleteClaim);
+adminRouter.get('/', getTemplates);
+adminRouter.post('/', uploadTemplate);
+adminRouter.delete('/:id', deleteTemplate);
 
 // TODO: Create auth middleware
 export default adminRouter;
