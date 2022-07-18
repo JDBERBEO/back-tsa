@@ -1,14 +1,28 @@
 import Template from '../models/templates';
+import Admin from '../models/admin';
 import { Request, Response } from 'express';
 import { v2 as cloudinary } from 'cloudinary';
 import { UploadedFile } from 'express-fileupload';
+import jwt from 'jsonwebtoken'
 
 cloudinary.config({
-  cloud_name: 'me-retracto',
-  api_key: '381613826999381',
-  api_secret: 'zstNjnStRqq-2ATDWtK5_JJcPTI',
+  cloud_name: process.env.CLOUDIARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
+export const signup = async (req:Request, res:Response) => {
+  try {
+    const { body } = req;
+    const roomie = await Admin.create(body);
+    const token = jwt.sign({ userId: roomie._id }, process.env.SECRET, {
+      expiresIn: 60 * 60 * 24 * 365,
+    });
+    res.status(201).json({ token });
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+}
 export const getTemplates= async (req: Request, res: Response) => {
   try {
     const templates = await Template.find();

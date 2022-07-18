@@ -65,7 +65,6 @@ export const postClaimRender = async (req: Request, res: Response) => {
 
   try {
     const claimUrl = await cloudinary.uploader.upload(path.resolve(__dirname, 'output.docx'), {resource_type: 'auto'})
-    console.log('claumIRl: ', claimUrl)
     const newClaimBody = {
       name: template.name,
       internalCode: template.internalCode,
