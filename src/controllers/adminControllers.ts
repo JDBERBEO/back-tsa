@@ -11,15 +11,16 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
+
 export const signup = async (req:Request, res:Response) => {
   try {
     const { body } = req;
-    const roomie = await Admin.create(body);
-    const token = jwt.sign({ userId: roomie._id }, process.env.SECRET, {
-      expiresIn: 60 * 60 * 24 * 365,
+    const admin = await Admin.create(body);
+    const token = jwt.sign({ userId: admin._id }, process.env.SECRET as string, {
+      expiresIn: 60 * 60 * 24,
     });
     res.status(201).json({ token });
-  } catch (err) {
+  } catch (err: any) {
     res.status(400).json({ message: err.message });
   }
 }
