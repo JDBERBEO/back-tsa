@@ -4,6 +4,7 @@ import { Request, Response } from 'express';
 import { v2 as cloudinary } from 'cloudinary';
 import { UploadedFile } from 'express-fileupload';
 import jwt from 'jsonwebtoken'
+import bcrypt from 'bcrypt'
 
 cloudinary.config({
   cloud_name: process.env.CLOUDIARY_CLOUD_NAME,
@@ -22,6 +23,34 @@ export const signup = async (req:Request, res:Response) => {
     res.status(201).json({ token });
   } catch (err: any) {
     res.status(400).json({ message: err.message });
+  }
+}
+
+export const signin =async (req:Request, res:Response) => {
+  try {
+    const { email, password } = req.body;
+
+    const admin = await Admin.findOne({ email });
+
+    if (!admin) {
+      throw new Error("Password or invalid email");
+    }
+
+    const isValid = await bcrypt.compare(password, admin.password as string);
+
+    if (!isValid) {
+      throw new Error("Password or invalid email");
+    }
+
+    const token = jwt.sign({ userId: admin._id }, process.env.SECRET as string, {
+      expiresIn: 60 * 60 * 24 * 365,
+    });
+
+    res.status(201).json({ token });
+  } catch (error:any) {
+    console.log("ERROR", error.message);
+
+    res.status(400).json({ message: error.message });
   }
 }
 export const getTemplates= async (req: Request, res: Response) => {

@@ -29,9 +29,9 @@ export const getClaims = async (req: Request, res: Response) => {
 export const postClaimRender = async (req: Request, res: Response) => {
   const { id } = req.params;
   const { body } = req;
+  
   const template = await Template.findById({ _id: id });
   //TODO: send error when claim is not found
-  console.log('template: ', template)
   if (!template) return res.json({"error":"not found"});
 
   const file = fs.createWriteStream(path.resolve(__dirname, 'temp.docx'));
@@ -69,7 +69,9 @@ export const postClaimRender = async (req: Request, res: Response) => {
       name: template.name,
       internalCode: template.internalCode,
       fileUrl: claimUrl.secure_url,
-      fileUid: claimUrl.public_id
+      fileUid: claimUrl.public_id,
+      defendant: body.claimFields.defendantName,
+      claimer: body.claimFields.claimerName
     }
 
     const newClaim = await Claim.create(newClaimBody);

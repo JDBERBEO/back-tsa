@@ -2,12 +2,55 @@ import Claim from '../models/claims';
 import { Request, Response } from 'express';
 import { v2 as cloudinary } from 'cloudinary';
 import { UploadedFile } from 'express-fileupload';
+import Lawyer from '../models/lawyer';
+import jwt from 'jsonwebtoken'
+import bcrypt from 'bcrypt'
 
 cloudinary.config({
   cloud_name: 'me-retracto',
   api_key: '381613826999381',
   api_secret: 'zstNjnStRqq-2ATDWtK5_JJcPTI',
 });
+
+
+export const signup = async (req:Request, res:Response) => {
+  try {
+    const { body } = req;
+    const lawyer = await Lawyer.create(body);
+    const token = jwt.sign({ userId: lawyer._id }, process.env.SECRET as string, {
+      expiresIn: 60 * 60 * 24,
+    });
+    res.status(201).json({ token });
+  } catch (err: any) {
+    res.status(400).json({ message: err.message });
+  }
+}
+
+export const signin =async (req:Request, res:Response) => {
+  try {
+    const { email, password } = req.body;
+
+    const lawyer = await Lawyer.findOne({ email });
+
+    if (!lawyer) {
+      throw new Error("Password or invalid email");
+    }
+
+    const isValid = await bcrypt.compare(password, lawyer.password as string);
+
+    if (!isValid) {
+      throw new Error("Password or invalid email");
+    }
+
+    const token = jwt.sign({ userId: lawyer._id }, process.env.SECRET as string, {
+      expiresIn: 60 * 60 * 24 * 365,
+    });
+
+    res.status(201).json({ token });
+  } catch (error:any) {
+    res.status(400).json({ message: error.message });
+  }
+}
 
 export const getClaims = async (req: Request, res: Response) => {
   try {
@@ -25,8 +68,6 @@ export const updateClaim = async (req: Request, res: Response) => {
     const { id } = req.params;
     const claim = await Claim.findById({ _id: id });
 
-    console.log('claim: ', claim)
-    console.log('req.files: ', req)
     if (!req.files) return res.json({"error":"file not found"}) ;
     if (!claim) return res.json({"error":"claim not fond"}) ;
 
@@ -49,7 +90,5 @@ export const updateClaim = async (req: Request, res: Response) => {
     res.status(201).send({ template });
   } catch (error) {
     res.json({error: error})
-    //TODO: Send error
-    console.log('error: ', error);
   }
 };

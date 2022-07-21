@@ -6,6 +6,8 @@ interface Claim extends Document {
   fileUrl: string;
   fileUid: string;
   description: string;
+  defendant?: string;
+  claimer?: string;
 }
 
 const ClaimSchema: Schema = new Schema(
@@ -26,11 +28,17 @@ const ClaimSchema: Schema = new Schema(
     type: String, 
     required: true 
   },
+  defendant: {
+    type: String
+  },
+  claimer:{
+    type: String
+  }
   },
   {
     timestamps: true,
   });
 
-const Claim: Model<Claim> = model('User', ClaimSchema);
+const Claim: Model<Claim> = model('Claim', ClaimSchema);
 
 export default Claim;
