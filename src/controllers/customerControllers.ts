@@ -64,7 +64,7 @@ export const postClaimRender = async (req: Request, res: Response) => {
   fs.writeFileSync(path.resolve(__dirname, 'output.docx'), buf);
 
   try {
-    const claimUrl = await cloudinary.uploader.upload(path.resolve(__dirname, 'output.docx'), {resource_type: 'auto'})
+    const claimUrl = await cloudinary.uploader.upload(path.resolve(__dirname, 'output.docx'), {resource_type: 'auto', folder: 'claims'} )
     const newClaimBody = {
       name: template.name,
       internalCode: template.internalCode,

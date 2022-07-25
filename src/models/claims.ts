@@ -8,6 +8,7 @@ interface Claim extends Document {
   description: string;
   defendant?: string;
   claimer?: string;
+  status?: string;
 }
 
 const ClaimSchema: Schema = new Schema(
@@ -33,6 +34,10 @@ const ClaimSchema: Schema = new Schema(
   },
   claimer:{
     type: String
+  },
+  status: {
+    type: String,
+    default: "notChecked"
   }
   },
   {

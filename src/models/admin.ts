@@ -5,7 +5,7 @@ const emailRegex =
   const passwordRegExp = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/
 
 interface Admin extends Document {
-  email: string;
+  email?: string;
   firstName: string;
   lastName: string;
   password?: string;

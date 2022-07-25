@@ -74,12 +74,14 @@ export const updateClaim = async (req: Request, res: Response) => {
     await cloudinary.uploader.destroy(claim.fileUid, {
       type: 'upload',
       resource_type: 'raw',
+      
     });
 
 
     const file = req.files.file as UploadedFile;
     const fileResp = await cloudinary.uploader.upload(file.tempFilePath, {
       resource_type: 'auto',
+      folder: 'claims'
     });
 
   
