@@ -94,3 +94,24 @@ export const updateClaim = async (req: Request, res: Response) => {
     res.json({error: error})
   }
 };
+
+export const updateClaimStatus = async (req: Request, res: Response) => {
+  
+  try {
+    const { id } = req.params;
+    const {status } = req.body
+    if (!status) return res.json({"error":"status not fond"})
+
+    const claim = await Claim.findById({ _id: id });
+
+    if (!claim) return res.json({"error":"claim not fond"}) ;
+  
+    const updatedClaim = await Claim.findByIdAndUpdate(id,   { status },
+      {
+        new: true,
+      });
+    res.status(201).send({ updatedClaim });
+  } catch (error) {
+    res.json({error: error})
+  }
+};
