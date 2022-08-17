@@ -4,11 +4,13 @@ import {
   updateClaim,
   updateClaimStatus,
   signup,
-  signin
+  signin,
+  getClaim
 } from '../controllers/lawyerControllers';
 
 const lawyerRouter = express.Router();
 
+lawyerRouter.get('/getClaim/:id', getClaim);
 lawyerRouter.get('/', getClaims);
 lawyerRouter.put('/updateClaimStatus/:id', updateClaimStatus)
 lawyerRouter.put('/:id', updateClaim);

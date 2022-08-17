@@ -30,6 +30,7 @@ export const postClaimRender = async (req: Request, res: Response) => {
   const { id } = req.params;
   const { body } = req;
   
+  console.log('body_ ', body)
   const template = await Template.findById({ _id: id });
   //TODO: send error when claim is not found
   if (!template) return res.json({"error":"not found"});
@@ -71,7 +72,8 @@ export const postClaimRender = async (req: Request, res: Response) => {
       fileUrl: claimUrl.secure_url,
       fileUid: claimUrl.public_id,
       defendant: body.claimFields.defendantName,
-      claimer: body.claimFields.claimerName
+      claimer: body.claimFields.claimerName,
+      claimerEmail: body.claimFields.claimerEmail
     }
 
     const newClaim = await Claim.create(newClaimBody);

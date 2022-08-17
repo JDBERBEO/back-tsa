@@ -62,13 +62,27 @@ export const getClaims = async (req: Request, res: Response) => {
   }
 };
 
+export const getClaim = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params
+    const claim = await Claim.findById({ _id: id });
+
+    if (!claim) return res.status(404).json({"error":"claim not found"}) ;
+
+    res.status(200).json({claim});
+  } catch (error: any) {
+    // TODO: Type error
+    res.send('error');
+  }
+};
+
 export const updateClaim = async (req: Request, res: Response) => {
   
   try {
     const { id } = req.params;
     const claim = await Claim.findById({ _id: id });
 
-    if (!req.files) return res.json({"error":"file not found"}) ;
+    if (!req.files) return res.status(406).json({fileStatus: 'file Missing'})
     if (!claim) return res.json({"error":"claim not fond"}) ;
 
     await cloudinary.uploader.destroy(claim.fileUid, {
