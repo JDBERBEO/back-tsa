@@ -43,6 +43,11 @@ const ClaimSchema: Schema = new Schema(
   claimerEmail: {
     type: String,
     required: true
+  },
+  expireAt: {
+    type: Date,
+    default: Date.now(),
+    expires: 60*60*24*365
   }
   },
   {
