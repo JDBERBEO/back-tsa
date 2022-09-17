@@ -10,6 +10,7 @@ cloudinary.config({
   cloud_name: 'me-retracto',
   api_key: '381613826999381',
   api_secret: 'zstNjnStRqq-2ATDWtK5_JJcPTI',
+  secure: true
 });
 
 
@@ -83,7 +84,7 @@ export const updateClaim = async (req: Request, res: Response) => {
     const claim = await Claim.findById({ _id: id });
 
     if (!req.files) return res.status(406).json({fileStatus: 'file Missing'})
-    if (!claim) return res.json({"error":"claim not fond"}) ;
+    if (!claim) return res.status(404).json({"error":"claim not fond"}) ;
 
     await cloudinary.uploader.destroy(claim.fileUid, {
       type: 'upload',
@@ -95,15 +96,17 @@ export const updateClaim = async (req: Request, res: Response) => {
     const file = req.files.file as UploadedFile;
     const fileResp = await cloudinary.uploader.upload(file.tempFilePath, {
       resource_type: 'auto',
-      folder: 'claims'
+      folder: 'claims',
+      public_id: file.name,
     });
 
   
-    const template = await Claim.findByIdAndUpdate(id,   { fileUrl: fileResp.url, fileUid: fileResp.public_id },
+    const newClaim = await Claim.findByIdAndUpdate(id,   { fileUrl: fileResp.secure_url, fileUid: fileResp.public_id },
       {
         new: true,
       });
-    res.status(201).send({ template });
+
+    res.status(201).send({ newClaim });
   } catch (error) {
     res.json({error: error})
   }

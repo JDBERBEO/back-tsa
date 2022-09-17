@@ -33,7 +33,7 @@ export const postClaimRender = async (req: Request, res: Response) => {
   console.log('body_ ', body)
   const template = await Template.findById({ _id: id });
   //TODO: send error when claim is not found
-  if (!template) return res.json({"error":"not found"});
+  if (!template) return res.status(404).json({"error":"not found"});
 
   const file = fs.createWriteStream(path.resolve(__dirname, 'temp.docx'));
   await getFile(file, template.fileUrl);

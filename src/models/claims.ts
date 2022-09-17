@@ -47,7 +47,7 @@ const ClaimSchema: Schema = new Schema(
   expireAt: {
     type: Date,
     default: Date.now(),
-    expires: 60*60*24*365
+    expires: 30
   }
   },
   {

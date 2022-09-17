@@ -6,6 +6,7 @@ import customerRouter from './routes/customerRoutes';
 import cors from 'cors';
 import fileUpload from 'express-fileupload';
 import dotenv from 'dotenv';
+import contactUsRouter from './routes/contactsUsRoutes';
 
 dotenv.config();
 
@@ -25,6 +26,7 @@ app.use(
 app.use('/administrator', adminRouter);
 app.use('/lawyer', lawyerRouter);
 app.use('/customer', customerRouter);
+app.use('/contactUs', contactUsRouter);
 
 app.listen(4000, () => {
   console.log('The application is listening on port 4000!');
