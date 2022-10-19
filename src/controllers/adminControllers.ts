@@ -69,10 +69,10 @@ export const uploadTemplate = async (req: Request, res: Response) => {
   try {
     const { body } = req;
 
-    if (!req.files) return;
+    if (!req.files) return res.json({error:'no file'});
 
     const file = req.files.file as UploadedFile;
-    const fileResp = await cloudinary.uploader.upload(file.tempFilePath + ".docx", {
+    const fileResp = await cloudinary.uploader.upload(file.tempFilePath, {
       resource_type: 'auto', folder:'templates'
     });
 

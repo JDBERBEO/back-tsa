@@ -10,6 +10,7 @@ interface Claim extends Document {
   claimer?: string;
   status?: string;
   claimerEmail?: string;
+  payment?: object;
 }
 
 const ClaimSchema: Schema = new Schema(
@@ -44,11 +45,23 @@ const ClaimSchema: Schema = new Schema(
     type: String,
     required: true
   },
-  expireAt: {
-    type: Date,
-    default: Date.now(),
-    expires: 30
-  }
+  payment: {
+    type: Object,
+    default: {
+      status: '',
+      amount: 0,
+      currency: '',
+      tax: 0,
+      description: '',
+      storeResponse: '',
+      paymentMethod: '',
+    }
+  },
+  // expireAt: {
+  //   type: Date,
+  //   default: Date.now(),
+  //   expires: 30
+  // }
   },
   {
     timestamps: true,

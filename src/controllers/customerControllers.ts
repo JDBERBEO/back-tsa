@@ -73,7 +73,10 @@ export const postClaimRender = async (req: Request, res: Response) => {
       fileUid: claimUrl.public_id,
       defendant: body.claimFields.defendantName,
       claimer: body.claimFields.claimerName,
-      claimerEmail: body.claimFields.claimerEmail
+      claimerEmail: body.claimFields.claimerEmail,
+      payment: {
+        amount: template.price,
+      }
     }
 
     const newClaim = await Claim.create(newClaimBody);
