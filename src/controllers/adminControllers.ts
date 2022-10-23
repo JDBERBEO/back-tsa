@@ -100,7 +100,7 @@ export const deleteTemplate = async (req: Request, res: Response) => {
     const templates = await Template.find();
     res.status(200).json(templates);
   } catch (error) {
-    console.log('error: ', error);
+    res.send({error})
   }
 };
 
@@ -120,7 +120,7 @@ export const deleteClaim = async (req: Request, res: Response) => {
     const claims = await Claim.find();
     res.status(200).json(claims);
   } catch (error) {
-    console.log('error: ', error);
+    res.send({error})
   }
 };
 
@@ -141,7 +141,7 @@ export const deleteClaims = async (req: Request, res: Response) => {
     await Claim.deleteMany();
     res.status(200).json(claims);
   } catch (error) {
-    console.log('error: ', error);
+    res.send({error})
   }
 };
 
@@ -151,7 +151,6 @@ export const getAdmins = async (req: Request, res: Response) => {
     res.status(200).json(admins);
   } catch (error: any) {
     // TODO: Type error
-    res.send('error');
-    console.log('error: ', error);
+    res.send({error});
   }
 };
