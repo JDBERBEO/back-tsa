@@ -27,12 +27,15 @@ export const getClaims = async (req: Request, res: Response) => {
 
 export const postPreviousCheckClaim =async (req: Request, res: Response) => {
   try {
-    const { id } = req.params
+    
+    const {id} = req.params
     const {payment, ...claimData} = req.body
     
+    const template = await Template.findById({ _id: id });
+    if (!template) return res.status(404).json({"error":"not found"});
     const newClaim: unknown = {
-      templateType: '',
-      templateInternalCode: '',
+      templateType: template.name,
+      templateInternalCode: template.internalCode,
       fileUrl: '',
       fileUid: '',
       revisionStatus: 'notChecked',
@@ -40,12 +43,8 @@ export const postPreviousCheckClaim =async (req: Request, res: Response) => {
       ...claimData
     }
 
-    // newClaim.payment = payment
-    // newClaim.claimFields = claimData
-
-    console.log('newClaim: ', newClaim)
-    // const newClaim = await Claim.create(body.claimFields);
-    res.status(201).send({ newClaim });
+    const claimCreated = await Claim.create(newClaim);
+    res.status(201).send({ claimCreated });
   } catch (error) {
     res.status(404).json({error})
   }
