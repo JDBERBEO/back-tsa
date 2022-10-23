@@ -30,6 +30,7 @@ export const postPreviousCheckClaim =async (req: Request, res: Response) => {
     
     const {id} = req.params
     const { claimFields } = req.body
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const {payment, ...claimData} = claimFields
     
     const template = await Template.findById({ _id: id });
@@ -40,7 +41,6 @@ export const postPreviousCheckClaim =async (req: Request, res: Response) => {
       fileUrl: '-',
       fileUid: '-',
       revisionStatus: 'notChecked',
-      ...payment,
       ...claimData
     }
 

@@ -35,7 +35,7 @@ const ClaimSchema: Schema = new Schema(
   payment: {
     type: Object,
     default: {
-      status: '',
+      status: 'notPaid',
       amount: 0,
       currency: '',
       tax: 0,
