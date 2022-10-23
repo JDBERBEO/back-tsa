@@ -8,6 +8,9 @@ import PizZip from 'pizzip';
 import Docxtemplater from 'docxtemplater';
 import https from 'https';
 import Template from '../models/templates';
+// import {newContactUs} from '../utils/mailer'
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { newContactUs } = require("../utils/mailer");
 
 cloudinary.config({
   cloud_name: 'me-retracto',
@@ -31,6 +34,7 @@ export const postContactUs = async (req: Request, res: Response) => {
     const { body } = req
     const contactUsReport = await ContactUs.create(body)
     res.status(201).send({ contactUsReport });
+    newContactUs('meretracto2022@gmail.com', 'Pedro', 'pedro@gmail.com', 'esto es una prueba')
   } catch (error) {
     res.json(error)
   }
