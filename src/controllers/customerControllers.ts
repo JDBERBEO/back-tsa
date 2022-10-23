@@ -28,9 +28,24 @@ export const getClaims = async (req: Request, res: Response) => {
 export const postPreviousCheckClaim =async (req: Request, res: Response) => {
   try {
     const { id } = req.params
-    const {body} = req
+    const {payment, ...claimFields} = req.body
     
-    const newClaim = await Claim.create(body.claimFields);
+    const newClaim = {
+      templateType: '',
+      TemplateInternalCode: '',
+      fileUrl: '',
+      fileUid: '',
+      revisionStatus: 'notChecked',
+      payment: {
+        ...payment
+      },
+      claimFields: {
+        ...claimFields
+      }
+
+    }
+    console.log('newClaim: ', newClaim)
+    // const newClaim = await Claim.create(body.claimFields);
     res.status(201).send({ newClaim });
   } catch (error) {
     res.status(404).json({error})
