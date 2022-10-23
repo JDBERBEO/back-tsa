@@ -9,6 +9,8 @@ interface Claim extends Document {
   defendant?: string;
   claimer?: string;
   status?: string;
+  claimerEmail?: string;
+  payment?: object;
 }
 
 const ClaimSchema: Schema = new Schema(
@@ -38,7 +40,28 @@ const ClaimSchema: Schema = new Schema(
   status: {
     type: String,
     default: "notChecked"
-  }
+  },
+  claimerEmail: {
+    type: String,
+    required: true
+  },
+  payment: {
+    type: Object,
+    default: {
+      status: '',
+      amount: 0,
+      currency: '',
+      tax: 0,
+      description: '',
+      storeResponse: '',
+      paymentMethod: '',
+    }
+  },
+  // expireAt: {
+  //   type: Date,
+  //   default: Date.now(),
+  //   expires: 30
+  // }
   },
   {
     timestamps: true,

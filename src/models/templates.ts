@@ -6,6 +6,7 @@ interface Template extends Document {
   fileUrl: string;
   fileUid: string;
   description: string;
+  price: number
 }
 
 const TemplateSchema: Schema = new Schema(
@@ -26,6 +27,11 @@ const TemplateSchema: Schema = new Schema(
     type: String, 
     required: true 
   },
+  price: {
+    type: Number,
+    required: true,
+    default: 9000000
+  }
   },
   {
     timestamps: true,
