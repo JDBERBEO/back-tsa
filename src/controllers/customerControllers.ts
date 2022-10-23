@@ -83,7 +83,7 @@ export const postClaimRender = async (req: Request, res: Response) => {
   }
 };
 
-export const transactionInfo =async (req: Request, res: Response) => {
+export const transactionInfo = (req: Request, res: Response) => {
   console.log('BOdy: ', req.body)
   return res.send({})
 }
