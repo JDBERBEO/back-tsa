@@ -22,7 +22,6 @@ export const getClaims = async (req: Request, res: Response) => {
   } catch (error: any) {
     // TODO: Type error
     res.send('error');
-    console.log('error: ', error);
   }
 };
 
@@ -30,7 +29,6 @@ export const postClaimRender = async (req: Request, res: Response) => {
   const { id } = req.params;
   const { body } = req;
   
-  console.log('body_ ', body)
   const template = await Template.findById({ _id: id });
   //TODO: send error when claim is not found
   if (!template) return res.status(404).json({"error":"not found"});
@@ -43,7 +41,6 @@ export const postClaimRender = async (req: Request, res: Response) => {
     'binary'
   );
   
-  console.log('file: ', file)
   const zip = new PizZip(content);
 
   const doc = new Docxtemplater(zip, {
@@ -85,6 +82,11 @@ export const postClaimRender = async (req: Request, res: Response) => {
     res.json(error)
   }
 };
+
+export const transactionInfo =async (req: Request, res: Response) => {
+  console.log('BOdy: ', req.body)
+  return res.send({})
+}
 
 async function getFile(file: any, url: any) {
   return new Promise((resolve, reject) => {
