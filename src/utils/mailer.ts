@@ -20,10 +20,10 @@ try{
       console.log(error)
   }
 }
-async function newContactUs({email, name, userEmail, message}){
+async function newContactUs({eemail, name, userEmail, message}){
   await transporter.sendMail({
       from: `"${process.env.MAILER_USER}"`,
-      to: email,
+      to: eemail,
       subject: "Nuevo Mensaje de Contáctenos",
       html: `
       <div>
