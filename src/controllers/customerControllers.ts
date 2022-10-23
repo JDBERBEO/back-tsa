@@ -29,7 +29,8 @@ export const postPreviousCheckClaim =async (req: Request, res: Response) => {
   try {
     
     const {id} = req.params
-    const {payment, ...claimData} = req.body
+    const { claimFields } = req.body
+    const {payment, ...claimData} = claimFields
     
     const template = await Template.findById({ _id: id });
     if (!template) return res.status(404).json({"error":"not found"});
@@ -39,7 +40,7 @@ export const postPreviousCheckClaim =async (req: Request, res: Response) => {
       fileUrl: '-',
       fileUid: '-',
       revisionStatus: 'notChecked',
-      // ...payment,
+      ...payment,
       ...claimData
     }
 
