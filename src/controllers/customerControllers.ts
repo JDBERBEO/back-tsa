@@ -39,7 +39,7 @@ export const postPreviousCheckClaim =async (req: Request, res: Response) => {
       fileUrl: '-',
       fileUid: '-',
       revisionStatus: 'notChecked',
-      ...payment,
+      // ...payment,
       ...claimData
     }
 
