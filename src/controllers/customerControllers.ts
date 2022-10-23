@@ -85,7 +85,7 @@ export const postClaimRender = async (req: Request, res: Response) => {
 
 export const transactionInfo = async (req: Request, res: Response) => {
   try {
-    console.log('REq: ', req)
+    console.log('REq: ', req.body)
   } catch (error) {
     console.log('ERROR: ', error)
   }
