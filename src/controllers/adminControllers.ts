@@ -49,8 +49,6 @@ export const signin =async (req:Request, res:Response) => {
 
     res.status(201).json({ token });
   } catch (error:any) {
-    console.log("ERROR", error.message);
-
     res.status(400).json({ message: error.message });
   }
 }
@@ -61,7 +59,6 @@ export const getTemplates= async (req: Request, res: Response) => {
   } catch (error: any) {
     // TODO: Type error
     res.send('error');
-    console.log('error: ', error);
   }
 };
 
@@ -69,7 +66,7 @@ export const uploadTemplate = async (req: Request, res: Response) => {
   try {
     const { body } = req;
 
-    if (!req.files) return;
+    if (!req.files) return res.json({error:'no file'});
 
     const file = req.files.file as UploadedFile;
     const fileResp = await cloudinary.uploader.upload(file.tempFilePath, {
@@ -84,7 +81,6 @@ export const uploadTemplate = async (req: Request, res: Response) => {
   } catch (error) {
     res.json({error: error})
     //TODO: Send error
-    console.log('error: ', error);
   }
 };
 

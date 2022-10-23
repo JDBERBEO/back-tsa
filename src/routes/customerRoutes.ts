@@ -1,14 +1,15 @@
-import express, { Request, Response } from 'express';
+import express from 'express';
 import {
   getClaims,
   postClaimRender,
-  //   deleteClaim,
+  transactionInfo,
 } from '../controllers/customerControllers';
 
 const customerRouter = express.Router();
 
 customerRouter.get('/', getClaims);
 customerRouter.post('/:id', postClaimRender);
+customerRouter.post('/transactionInfo', transactionInfo);
 
 // TODO: Create auth middleware
 export default customerRouter;

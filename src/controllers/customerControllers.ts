@@ -22,7 +22,6 @@ export const getClaims = async (req: Request, res: Response) => {
   } catch (error: any) {
     // TODO: Type error
     res.send('error');
-    console.log('error: ', error);
   }
 };
 
@@ -32,7 +31,7 @@ export const postClaimRender = async (req: Request, res: Response) => {
   
   const template = await Template.findById({ _id: id });
   //TODO: send error when claim is not found
-  if (!template) return res.json({"error":"not found"});
+  if (!template) return res.status(404).json({"error":"not found"});
 
   const file = fs.createWriteStream(path.resolve(__dirname, 'temp.docx'));
   await getFile(file, template.fileUrl);
@@ -42,7 +41,6 @@ export const postClaimRender = async (req: Request, res: Response) => {
     'binary'
   );
   
-  console.log('file: ', file)
   const zip = new PizZip(content);
 
   const doc = new Docxtemplater(zip, {
@@ -71,7 +69,11 @@ export const postClaimRender = async (req: Request, res: Response) => {
       fileUrl: claimUrl.secure_url,
       fileUid: claimUrl.public_id,
       defendant: body.claimFields.defendantName,
-      claimer: body.claimFields.claimerName
+      claimer: body.claimFields.claimerName,
+      claimerEmail: body.claimFields.claimerEmail,
+      payment: {
+        amount: template.price,
+      }
     }
 
     const newClaim = await Claim.create(newClaimBody);
@@ -80,6 +82,11 @@ export const postClaimRender = async (req: Request, res: Response) => {
     res.json(error)
   }
 };
+
+export const transactionInfo =async (req: Request, res: Response) => {
+  console.log('BOdy: ', req.body)
+  return res.send({})
+}
 
 async function getFile(file: any, url: any) {
   return new Promise((resolve, reject) => {
