@@ -36,8 +36,8 @@ export const postPreviousCheckClaim =async (req: Request, res: Response) => {
     const newClaim: unknown = {
       templateType: template.name,
       templateInternalCode: template.internalCode,
-      fileUrl: '',
-      fileUid: '',
+      fileUrl: '-',
+      fileUid: '-',
       revisionStatus: 'notChecked',
       ...payment,
       ...claimData
