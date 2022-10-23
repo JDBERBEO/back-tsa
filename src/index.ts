@@ -25,6 +25,10 @@ app.use(
   })
 );
 
+app.get('/', (req, res)=> {
+  console.log('funciona')
+})
+
 app.use('/administrator', adminRouter);
 app.use('/lawyer', lawyerRouter);
 app.use('/customer', customerRouter);
