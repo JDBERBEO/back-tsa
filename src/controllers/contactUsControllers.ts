@@ -34,8 +34,7 @@ export const postContactUs = async (req: Request, res: Response) => {
     const { body } = req
     const contactUsReport = await ContactUs.create(body)
     res.status(201).send({ contactUsReport });
-    console.log('llegué hasta antes del llamdo')
-    await newContactUs('meretracto2022@gmail.com', 'Pedro', 'pedro@gmail.com', 'esto es una prueba')
+    await newContactUs(process.env.MAILER_USER, contactUsReport.name, contactUsReport.email, contactUsReport.message)
   } catch (error) {
     res.json(error)
   }
