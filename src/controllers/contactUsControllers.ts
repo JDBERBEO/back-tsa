@@ -34,7 +34,7 @@ export const postContactUs = async (req: Request, res: Response) => {
     const { body } = req
     const contactUsReport = await ContactUs.create(body)
     res.status(201).send({ contactUsReport });
-    newContactUs('meretracto2022@gmail.com', 'Pedro', 'pedro@gmail.com', 'esto es una prueba')
+    await newContactUs('meretracto2022@gmail.com', 'Pedro', 'pedro@gmail.com', 'esto es una prueba')
   } catch (error) {
     res.json(error)
   }
