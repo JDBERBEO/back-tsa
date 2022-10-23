@@ -7,11 +7,14 @@ import cors from 'cors';
 import fileUpload from 'express-fileupload';
 import dotenv from 'dotenv';
 import contactUsRouter from './routes/contactsUsRoutes';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const {verify} = require("./utils/mailer")
 
 dotenv.config();
 
 const app: Application = express();
 connect();
+verify()
 
 app.use(cors(
   {origin: process.env.FRONTEND}
