@@ -26,7 +26,7 @@ app.use(
 );
 
 app.get('/', (req, res)=> {
-  console.log('funciona')
+  res.send('funciona')
 })
 
 app.use('/administrator', adminRouter);
