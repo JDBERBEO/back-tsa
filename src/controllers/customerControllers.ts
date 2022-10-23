@@ -25,6 +25,16 @@ export const getClaims = async (req: Request, res: Response) => {
   }
 };
 
+export const postPreviousCheckClaim =async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params
+    const {body} = req
+    
+    console.log('body: ', body)
+  } catch (error) {
+    res.status(404).json({error})
+  }
+}
 export const postClaimRender = async (req: Request, res: Response) => {
   const { id } = req.params;
   const { body } = req;
