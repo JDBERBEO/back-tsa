@@ -123,7 +123,7 @@ export const updateClaimStatus = async (req: Request, res: Response) => {
 
     if (!claim) return res.json({"error":"claim not fond"}) ;
   
-    const updatedClaim = await Claim.findByIdAndUpdate(id,   { status },
+    const updatedClaim = await Claim.findByIdAndUpdate(id,   { revisionStatus: status },
       {
         new: true,
       });

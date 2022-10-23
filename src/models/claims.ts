@@ -1,26 +1,22 @@
 import { model, Schema, Model, Document } from 'mongoose';
 
 interface Claim extends Document {
-  name: string;
-  internalCode: string;
+  templateType: string;
+  templateInternalCode: string;
   fileUrl: string;
   fileUid: string;
-  description: string;
-  defendant?: string;
-  claimer?: string;
-  status?: string;
-  claimerEmail?: string;
+  revisionStatus: string;
   payment?: object;
-  // claimFields?: object
+  claimFields?: object
 }
 
 const ClaimSchema: Schema = new Schema(
   {
-  name: { 
+    templateType: { 
     type: String, 
     required: true 
   },
-  internalCode: { 
+  templateInternalCode: { 
     type: String, 
     required: true 
   },
@@ -32,19 +28,9 @@ const ClaimSchema: Schema = new Schema(
     type: String, 
     required: true 
   },
-  defendant: {
-    type: String
-  },
-  claimer:{
-    type: String
-  },
-  status: {
+  revisionStatus: {
     type: String,
     default: "notChecked"
-  },
-  claimerEmail: {
-    type: String,
-    required: true
   },
   payment: {
     type: Object,
@@ -58,14 +44,25 @@ const ClaimSchema: Schema = new Schema(
       paymentMethod: '',
     }
   },
-  // {
-  //   claimFields: {
-  //     type: Object,
-  //     default: {
-        
-  //     }
-  //   }
-  // }
+  claimFields: {
+    type: Object,
+    default: {
+      proofs: '',
+      templateId: '',
+      acceptTerms: false,
+      defendantName: '',
+      agreementDate: '',
+      claimerName: '',
+      claimerIdNumber: '',
+      claimerCity: '',
+      claimerAddress: '',
+      claimerEmail: '',
+      documentMonth: '',
+      documentYear: '',
+      casePrice: '',
+      facts: ''
+    }
+  }
   // expireAt: {
   //   type: Date,
   //   default: Date.now(),
