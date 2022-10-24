@@ -46,7 +46,6 @@ const ClaimSchema: Schema = new Schema(
   },
   claimFields: {
     type: Object,
-    default: {
       proofs: '',
       templateId: '',
       acceptTerms: false,
@@ -61,7 +60,6 @@ const ClaimSchema: Schema = new Schema(
       documentYear: '',
       casePrice: '',
       facts: ''
-    }
   }
   // expireAt: {
   //   type: Date,
