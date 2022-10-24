@@ -43,7 +43,9 @@ export const postPreviousCheckClaim =async (req: Request, res: Response) => {
       fileUrl: '-',
       fileUid: '-',
       revisionStatus: 'notChecked',
-      ...claimData
+      claimFields: {
+        ...claimData
+      }
     }
     
     console.log('newClaim: ', newClaim)
