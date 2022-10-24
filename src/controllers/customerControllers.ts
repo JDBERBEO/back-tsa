@@ -34,6 +34,7 @@ export const postPreviousCheckClaim =async (req: Request, res: Response) => {
     console.log('claimfields: ', claimFields)
     const {payment, ...claimData} = claimFields
     
+    console.log('claimData: ', claimData)
     const template = await Template.findById({ _id: id });
     if (!template) return res.status(404).json({"error":"not found"});
     const newClaim: unknown = {
@@ -44,7 +45,8 @@ export const postPreviousCheckClaim =async (req: Request, res: Response) => {
       revisionStatus: 'notChecked',
       ...claimData
     }
-
+    
+    console.log('newClaim: ', newClaim)
     const claimCreated = await Claim.create(newClaim);
     res.status(201).send({ claimCreated });
   } catch (error) {
