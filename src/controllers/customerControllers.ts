@@ -45,6 +45,10 @@ export const postPreviousCheckClaim =async (req: Request, res: Response) => {
       revisionStatus: 'notChecked',
       claimFields: {
         ...claimData
+      },
+      payment: {
+        status: 'notPaid',
+        amount: template.price
       }
     }
     
