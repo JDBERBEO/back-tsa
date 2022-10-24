@@ -31,6 +31,7 @@ export const postPreviousCheckClaim =async (req: Request, res: Response) => {
     const {id} = req.params
     const { claimFields } = req.body
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    console.log('claimfields: ', claimFields)
     const {payment, ...claimData} = claimFields
     
     const template = await Template.findById({ _id: id });
