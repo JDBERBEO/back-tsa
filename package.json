@@ -12,7 +12,9 @@
     "format:write": "prettier --write .",
     "lint:check": "eslint .",
     "lint:fix": "eslint --fix .",
-    "deploy": "git push && git push heroku main"
+    "deploy": "git push && git push heroku main",
+    "logs": "heroku logs --tail",
+    "console": "git add . && git commit -m ''"
   },
   "author": "",
   "license": "ISC",
