@@ -14,7 +14,7 @@
     "lint:fix": "eslint --fix .",
     "deploy": "git push && git push heroku main",
     "logs": "heroku logs --tail",
-    "console": "git add . && git commit -m ''"
+    "console": "git add . && git commit -m 'c'"
   },
   "author": "",
   "license": "ISC",
