@@ -123,7 +123,7 @@ export const transactionInfo = async (req: Request, res: Response) => {
     // console.log('REq: ', req.body.data.transaction.reference)
     const id = req.body.data.transaction.reference
     console.log('ID: ',id)
-    const claim = Claim.findById({id})
+    const claim = await Claim.findById({id})
     console.log('CLAIM !!!: ', claim)
     res.status(200).send({claim})
   } catch (error) {
