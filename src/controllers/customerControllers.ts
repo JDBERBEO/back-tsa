@@ -127,7 +127,7 @@ export const transactionInfo = async (req: Request, res: Response) => {
     const claim = await Claim.findById({_id:reference})
     if (!claim) return res.json({"error":"claim not fond"}) ;
   
-    const updatedClaim = await Claim.findByIdAndUpdate(id,   { payment: {status, amount: amount_in_cents, currency, paymentMethod: payment_method_type, transactionId: _id, }},
+    const updatedClaim = await Claim.findByIdAndUpdate(reference,   { payment: {status, amount: amount_in_cents, currency, paymentMethod: payment_method_type, transactionId: _id, }},
       {
         new: true,
       });
