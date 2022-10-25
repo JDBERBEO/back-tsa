@@ -122,10 +122,20 @@ export const transactionInfo = async (req: Request, res: Response) => {
   try {
     // console.log('REq: ', req.body.data.transaction.reference)
     const id = req.body.data.transaction.reference
+    console.log('TRANSACTION!!!: ', req.body.data)
     console.log('ID: ',id)
     const claim = await Claim.findById({_id:id})
-    console.log('CLAIM !!!: ', claim)
-    res.status(200).send({claim})
+    console.log('CLAIM !!!: ', claim?.templateType)
+    if (!claim) return res.json({"error":"claim not fond"}) ;
+  
+    // const updatedClaim = await Claim.findByIdAndUpdate(id,   { payment.status:  },
+    //   {
+    //     new: true,
+    //   });
+      
+    res.status(200).send({})
+
+
   } catch (error) {
     console.log('ERROR: ', error)
   }
