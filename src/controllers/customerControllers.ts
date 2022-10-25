@@ -55,7 +55,6 @@ export const postPreviousCheckClaim =async (req: Request, res: Response) => {
     console.log('newClaim: ', newClaim)
     const claimCreated = await Claim.create(newClaim);
 
-    console.log('claimCreated: ', claimCreated.templateType)
     res.status(201).send({ claimCreated });
   } catch (error) {
     res.status(404).json({error})
@@ -123,8 +122,9 @@ export const transactionInfo = async (req: Request, res: Response) => {
   try {
     // console.log('REq: ', req.body.data.transaction.reference)
     const id = req.body.data.transaction.reference
+    console.log('ID: ',id)
     const claim = Claim.findById({_id: id})
-    console.log('CLAIM !!!: ', claim)
+    // console.log('CLAIM !!!: ', claim.templateType)
   } catch (error) {
     console.log('ERROR: ', error)
   }
