@@ -41,6 +41,8 @@ const ClaimSchema: Schema = new Schema(
       description: '',
       storeResponse: '',
       paymentMethod: '',
+      transactionId: '',
+      transactionRef: ''
   },
   claimFields: {
     type: Object,

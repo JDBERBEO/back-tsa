@@ -121,7 +121,10 @@ export const postClaimRender = async (req: Request, res: Response) => {
 
 export const transactionInfo = async (req: Request, res: Response) => {
   try {
-    console.log('REq: ', req.body)
+    // console.log('REq: ', req.body.data.transaction.reference)
+    const id = req.body.data.transaction.reference
+    const claim = Claim.findById({_id: id})
+    console.log('CLAIM !!!: ', claim)
   } catch (error) {
     console.log('ERROR: ', error)
   }
