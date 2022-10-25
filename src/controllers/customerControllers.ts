@@ -132,9 +132,47 @@ export const transactionInfo = async (req: Request, res: Response) => {
         new: true,
       });
       
+    
     res.status(200).send({})
+    
+    if(status === 'APPROVED') {
+      const template = await Template.findById({ _id: updatedClaim?.claimFields?.templateId });
+      //TODO: send error when claim is not found
+      if (!template) return res.status(404).json({"error":"not found"});
 
-console.log('UPDATEDCLAIM: ', updatedClaim)
+      const file = fs.createWriteStream(path.resolve(__dirname, 'temp.docx'));
+      await getFile(file, template.fileUrl);
+
+      const content = fs.readFileSync(
+        path.resolve(__dirname, 'temp.docx'),
+        'binary'
+      );
+      
+      const zip = new PizZip(content);
+
+      const doc = new Docxtemplater(zip, {
+        paragraphLoop: true,
+        linebreaks: true,
+      });
+
+      // Render the document (Replace {first_name} by John, {last_name} by Doe, ...)
+      doc.render(updatedClaim?.claimFields);
+
+      const buf: Buffer = doc.getZip().generate({
+        type: 'nodebuffer',
+        // compression: DEFLATE adds a compression step.
+        // For a 50MB output document, expect 500ms additional CPU time
+        compression: 'DEFLATE',
+      });
+
+      // buf is a nodejs Buffer, you can either write it to a file or res.send it with express for example.
+      fs.writeFileSync(path.resolve(__dirname, 'output.docx'), buf);
+
+      const claimUrl = await cloudinary.uploader.upload(path.resolve(__dirname, 'output.docx'), {resource_type: 'auto', folder: 'claims'} )
+
+      console.log('claimURL: ', claimUrl)
+    }
+// console.log('UPDATEDCLAIM: ', updatedClaim)
   } catch (error) {
     console.log('ERROR: ', error)
   }

@@ -7,7 +7,24 @@ interface Claim extends Document {
   fileUid: string;
   revisionStatus: string;
   payment?: object;
-  claimFields?: object
+  claimFields?: ClaimFields
+}
+
+interface ClaimFields extends Claim {
+  proofs: string,
+  templateId: string,
+  acceptTerms: boolean,
+  defendantName: string,
+  agreementDate: string,
+  claimerName: string,
+  claimerIdNumber: string,
+  claimerCity: string,
+  claimerAddress: string,
+  claimerEmail: string,
+  documentMonth: string,
+  documentYear: string,
+  casePrice: string,
+  facts: string
 }
 
 const ClaimSchema: Schema = new Schema(
