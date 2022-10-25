@@ -124,7 +124,7 @@ export const transactionInfo = async (req: Request, res: Response) => {
     const id = req.body.data.transaction.reference
     console.log('ID: ',id)
     const claim = Claim.findById({id})
-    console.log('CLAIM !!!: ', claim.templateType)
+    console.log('CLAIM !!!: ', claim)
     res.status(200).send({claim})
   } catch (error) {
     console.log('ERROR: ', error)
