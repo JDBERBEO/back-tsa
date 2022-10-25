@@ -55,7 +55,7 @@ export const postPreviousCheckClaim =async (req: Request, res: Response) => {
     console.log('newClaim: ', newClaim)
     const claimCreated = await Claim.create(newClaim);
 
-    console.log('claimCreated: ', claimCreated)
+    console.log('claimCreated: ', claimCreated.templateType)
     res.status(201).send({ claimCreated });
   } catch (error) {
     res.status(404).json({error})
