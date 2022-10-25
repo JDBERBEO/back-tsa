@@ -121,13 +121,13 @@ export const postClaimRender = async (req: Request, res: Response) => {
 export const transactionInfo = async (req: Request, res: Response) => {
   try {
     // console.log('REq: ', req.body.data.transaction.reference)
-    const {reference, _id, amount_in_cents, currency, status, payment_method_type} = req.body.data.transaction
+    const {reference, id, amount_in_cents, currency, status, payment_method_type} = req.body.data.transaction
     
     console.log('refrence: ',reference)
     const claim = await Claim.findById({_id:reference})
     if (!claim) return res.json({"error":"claim not fond"}) ;
   
-    const updatedClaim = await Claim.findByIdAndUpdate(reference,   { payment: {status, amount: amount_in_cents, currency, paymentMethod: payment_method_type, transactionId: _id, }},
+    const updatedClaim = await Claim.findByIdAndUpdate(reference,   { payment: {status, amount: amount_in_cents, currency, paymentMethod: payment_method_type, transactionId: id, }},
       {
         new: true,
       });
