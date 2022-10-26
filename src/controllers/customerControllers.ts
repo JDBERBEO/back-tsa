@@ -125,12 +125,13 @@ export const transactionInfo = async (req: Request, res: Response) => {
     
     console.log('refrence: ',reference)
     const claim = await Claim.findById({_id:reference})
+    console.log('claim: ', claim)
+    console.log('STATUS: ', status)
     if (!claim) return res.json({"error":"claim not fond"}) ;
   
     res.status(200).send({})
     
     if(status === 'APPROVED') {
-      console.log('TEMPLATEID: ', claim.claimFields)
       const template = await Template.findById({ _id: claim?.claimFields?.id });
       //TODO: send error when claim is not found
       if (!template) return res.status(404).json({"error":"not found"});
