@@ -190,6 +190,7 @@ export const getClaimByTransactionId = async (req: Request, res: Response) => {
     const { trasanctionId } = req.params
     const claim = await Claim.findOne({ payment: {transactionId: trasanctionId }});
 
+    console.log('claim', claim)
     if (!claim) return res.status(404).json({"error":"claim not found"}) ;
 
     res.status(200).json({claim});
