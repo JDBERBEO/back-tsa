@@ -173,7 +173,7 @@ export const transactionInfo = async (req: Request, res: Response) => {
 
       console.log('claimURL: ', claimUrl)
 
-      const updatedClaim = await Claim.findByIdAndUpdate(reference,   { fileUrl:claimUrl.secure_url, fileUid: claimUrl.public_id, transactionId, payment: {status, amount: amount_in_cents, currency, paymentMethod: payment_method_type, transactionId: id, }},
+      const updatedClaim = await Claim.findByIdAndUpdate(reference,   { fileUrl:claimUrl.secure_url, fileUid: claimUrl.public_id, transactionId: id, payment: {status, amount: amount_in_cents, currency, paymentMethod: payment_method_type, transactionId: id, }},
         {
           new: true,
         });

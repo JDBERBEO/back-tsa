@@ -6,7 +6,7 @@ interface Claim extends Document {
   fileUrl: string;
   fileUid: string;
   revisionStatus: string;
-  transactionId?: string
+  transactionId?: string;
   payment?: object;
   claimFields?: ClaimFields
 }
