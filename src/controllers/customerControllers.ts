@@ -175,6 +175,7 @@ export const transactionInfo = async (req: Request, res: Response) => {
         {
           new: true,
         });
+        console.log('UPDATEDCLAIM: ', updatedClaim)
     }
 
   } catch (error) {
