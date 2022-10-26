@@ -127,12 +127,6 @@ export const transactionInfo = async (req: Request, res: Response) => {
     const claim = await Claim.findById({_id:reference})
     if (!claim) return res.json({"error":"claim not fond"}) ;
   
-    // const updatedClaim = await Claim.findByIdAndUpdate(reference,   { payment: {status, amount: amount_in_cents, currency, paymentMethod: payment_method_type, transactionId: id, }},
-    //   {
-    //     new: true,
-    //   });
-      
-    
     res.status(200).send({})
     
     if(status === 'APPROVED') {
@@ -171,15 +165,17 @@ export const transactionInfo = async (req: Request, res: Response) => {
 
       const claimUrl = await cloudinary.uploader.upload(path.resolve(__dirname, 'output.docx'), {resource_type: 'auto', folder: 'claims'} )
 
-      console.log('claimURL: ', claimUrl)
-
       const updatedClaim = await Claim.findByIdAndUpdate(reference,   { fileUrl:claimUrl.secure_url, fileUid: claimUrl.public_id, transactionId: id, payment: {status, amount: amount_in_cents, currency, paymentMethod: payment_method_type, transactionId: id, }},
         {
           new: true,
         });
-      
-        console.log('UPDATEDCLAIM: ', updatedClaim)
+    }else {
+      const updatedClaim = await Claim.findByIdAndUpdate(reference,   { payment: {status, amount: amount_in_cents, currency, paymentMethod: payment_method_type, transactionId: id, }},
+        {
+          new: true,
+        });
     }
+
   } catch (error) {
     console.log('ERROR: ', error)
   }
@@ -188,11 +184,9 @@ export const transactionInfo = async (req: Request, res: Response) => {
 export const getClaimByTransactionId = async (req: Request, res: Response) => {
   try {
     const { transactionId } = req.params
-    console.log('tansactionId: ', transactionId)
 
     const claim = await Claim.find({transactionId});
 
-    console.log('claim', claim)
     if (claim.length === 0) return res.status(404).json({"error":"claim not found"}) ;
 
     res.status(200).json({claim});
