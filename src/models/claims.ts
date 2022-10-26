@@ -6,6 +6,7 @@ interface Claim extends Document {
   fileUrl: string;
   fileUid: string;
   revisionStatus: string;
+  transactionId?: string
   payment?: object;
   claimFields?: ClaimFields
 }
@@ -48,6 +49,9 @@ const ClaimSchema: Schema = new Schema(
   revisionStatus: {
     type: String,
     default: "notChecked"
+  },
+  transactionId: {
+    type:String,
   },
   payment: {
     type: Object,

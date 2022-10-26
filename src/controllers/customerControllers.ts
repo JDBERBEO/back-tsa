@@ -173,7 +173,7 @@ export const transactionInfo = async (req: Request, res: Response) => {
 
       console.log('claimURL: ', claimUrl)
 
-      const updatedClaim = await Claim.findByIdAndUpdate(reference,   { fileUrl:claimUrl.secure_url, fileUid: claimUrl.public_id, payment: {status, amount: amount_in_cents, currency, paymentMethod: payment_method_type, transactionId: id, }},
+      const updatedClaim = await Claim.findByIdAndUpdate(reference,   { fileUrl:claimUrl.secure_url, fileUid: claimUrl.public_id, transactionId, payment: {status, amount: amount_in_cents, currency, paymentMethod: payment_method_type, transactionId: id, }},
         {
           new: true,
         });
@@ -189,7 +189,7 @@ export const getClaimByTransactionId = async (req: Request, res: Response) => {
   try {
     const { transactionId } = req.params
     console.log('tansactionId: ', transactionId)
-    const claim = await Claim.findOne({revisionStatus: "notChecked"});
+    const claim = await Claim.find({transactionId});
 
     console.log('claim', claim)
     if (!claim) return res.status(404).json({"error":"claim not found"}) ;
