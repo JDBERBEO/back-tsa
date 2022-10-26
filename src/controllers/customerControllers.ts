@@ -187,8 +187,9 @@ export const transactionInfo = async (req: Request, res: Response) => {
 
 export const getClaimByTransactionId = async (req: Request, res: Response) => {
   try {
-    const { trasanctionId } = req.params
-    const claim = await Claim.find({ payment: {transactionId: "124866-1666620914-76450" }});
+    const { transactionId } = req.params
+    console.log('tansactionId: ', transactionId)
+    const claim = await Claim.find({payment: { transactionId: transactionId }});
 
     console.log('claim', claim)
     if (!claim) return res.status(404).json({"error":"claim not found"}) ;
