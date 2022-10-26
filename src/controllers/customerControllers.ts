@@ -127,10 +127,10 @@ export const transactionInfo = async (req: Request, res: Response) => {
     const claim = await Claim.findById({_id:reference})
     if (!claim) return res.json({"error":"claim not fond"}) ;
   
-    const updatedClaim = await Claim.findByIdAndUpdate(reference,   { payment: {status, amount: amount_in_cents, currency, paymentMethod: payment_method_type, transactionId: id, }},
-      {
-        new: true,
-      });
+    // const updatedClaim = await Claim.findByIdAndUpdate(reference,   { payment: {status, amount: amount_in_cents, currency, paymentMethod: payment_method_type, transactionId: id, }},
+    //   {
+    //     new: true,
+    //   });
       
     
     res.status(200).send({})
@@ -157,7 +157,7 @@ export const transactionInfo = async (req: Request, res: Response) => {
       });
 
       // Render the document (Replace {first_name} by John, {last_name} by Doe, ...)
-      doc.render(updatedClaim?.claimFields);
+      doc.render(claim?.claimFields);
 
       const buf: Buffer = doc.getZip().generate({
         type: 'nodebuffer',
@@ -172,8 +172,14 @@ export const transactionInfo = async (req: Request, res: Response) => {
       const claimUrl = await cloudinary.uploader.upload(path.resolve(__dirname, 'output.docx'), {resource_type: 'auto', folder: 'claims'} )
 
       console.log('claimURL: ', claimUrl)
+
+      const updatedClaim = await Claim.findByIdAndUpdate(reference,   { fileUrl:claimUrl.secure_url, fileUid: claimUrl.public_id, payment: {status, amount: amount_in_cents, currency, paymentMethod: payment_method_type, transactionId: id, }},
+        {
+          new: true,
+        });
+      
+        console.log('UPDATEDCLAIM: ', updatedClaim)
     }
-// console.log('UPDATEDCLAIM: ', updatedClaim)
   } catch (error) {
     console.log('ERROR: ', error)
   }
