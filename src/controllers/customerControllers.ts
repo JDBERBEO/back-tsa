@@ -171,7 +171,7 @@ export const transactionInfo = async (req: Request, res: Response) => {
           new: true,
         });
     }else {
-      const updatedClaim = await Claim.findByIdAndUpdate(reference,   { payment: {status, amount: amount_in_cents, currency, paymentMethod: payment_method_type, transactionId: id, }},
+      const updatedClaim = await Claim.findByIdAndUpdate(reference,   { transactionId: id, payment: {status, amount: amount_in_cents, currency, paymentMethod: payment_method_type, transactionId: id, }},
         {
           new: true,
         });
