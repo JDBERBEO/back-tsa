@@ -185,6 +185,20 @@ export const transactionInfo = async (req: Request, res: Response) => {
   }
 }
 
+export const getClaimByTransactionId = async (req: Request, res: Response) => {
+  try {
+    const { trasanctionId } = req.params
+    const claim = await Claim.findOne({ payment: {transactionId: trasanctionId }});
+
+    if (!claim) return res.status(404).json({"error":"claim not found"}) ;
+
+    res.status(200).json({claim});
+  } catch (error: any) {
+    // TODO: Type error
+    res.send('error');
+  }
+};
+
 async function getFile(file: any, url: any) {
   return new Promise((resolve, reject) => {
     const req = https.get(url);
