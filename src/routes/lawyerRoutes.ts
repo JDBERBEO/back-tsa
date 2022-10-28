@@ -7,10 +7,11 @@ import {
   signin,
   getClaim
 } from '../controllers/lawyerControllers';
+import {auth} from '../utils/middlewares'
 
 const lawyerRouter = express.Router();
 
-lawyerRouter.get('/', getClaims);
+lawyerRouter.get('/', auth, getClaims);
 lawyerRouter.put('/:id', updateClaim);
 lawyerRouter.get('/getClaim/:id', getClaim);
 lawyerRouter.put('/updateClaimStatus/:id', updateClaimStatus)
