@@ -12,11 +12,11 @@ import {auth} from '../utils/middlewares'
 const lawyerRouter = express.Router();
 
 lawyerRouter.get('/', auth, getClaims);
-lawyerRouter.put('/:id', updateClaim);
-lawyerRouter.get('/getClaim/:id', getClaim);
-lawyerRouter.put('/updateClaimStatus/:id', updateClaimStatus)
+lawyerRouter.put('/:id', auth, updateClaim);
+lawyerRouter.get('/getClaim/:id', auth, getClaim);
+lawyerRouter.put('/updateClaimStatus/:id', auth, updateClaimStatus)
 lawyerRouter.post('/signup', signup);
-lawyerRouter.post('/signin', signin);
+lawyerRouter.post('/signin',  signin);
 
 
 // TODO: Create auth middleware

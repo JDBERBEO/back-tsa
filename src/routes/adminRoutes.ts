@@ -13,14 +13,14 @@ import {auth} from '../utils/middlewares'
 
 const adminRouter = express.Router();
 
-adminRouter.get('/allAdmins', getAdmins);
+adminRouter.get('/allAdmins', auth, getAdmins);
 adminRouter.get('/', getTemplates);
-adminRouter.post('/', uploadTemplate);
+adminRouter.post('/', auth, uploadTemplate);
 adminRouter.post('/signup', signup);
 adminRouter.post('/signin', signin);
-adminRouter.delete('/deleteAllClaims', deleteClaims);
-adminRouter.delete('/deleteClaims/:id', deleteClaim);
-adminRouter.delete('/:id', deleteTemplate);
+adminRouter.delete('/deleteAllClaims', auth, deleteClaims);
+adminRouter.delete('/deleteClaims/:id', auth, deleteClaim);
+adminRouter.delete('/:id', auth, deleteTemplate);
 
 
 // TODO: Create auth middleware
