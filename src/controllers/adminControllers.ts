@@ -3,8 +3,8 @@ import Admin from '../models/admin';
 import { Request, Response } from 'express';
 import { v2 as cloudinary } from 'cloudinary';
 import { UploadedFile } from 'express-fileupload';
-import jwt from 'jsonwebtoken'
-import bcrypt from 'bcrypt'
+import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
 import Claim from '../models/claims';
 
 cloudinary.config({
@@ -13,46 +13,53 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-
-export const signup = async (req:Request, res:Response) => {
+export const signup = async (req: Request, res: Response) => {
   try {
     const { body } = req;
     const admin = await Admin.create(body);
-    const token = jwt.sign({ userId: admin._id }, process.env.SECRET as string, {
-      expiresIn: 60 * 60 * 24,
-    });
+    const token = jwt.sign(
+      { userId: admin._id },
+      process.env.SECRET as string,
+      {
+        expiresIn: 60 * 60 * 24,
+      }
+    );
     res.status(201).json({ token });
   } catch (err: any) {
     res.status(400).json({ message: err.message });
   }
-}
+};
 
-export const signin =async (req:Request, res:Response) => {
+export const signin = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
 
     const admin = await Admin.findOne({ email });
 
     if (!admin) {
-      throw new Error("Password or invalid email");
+      throw new Error('Password or invalid email');
     }
 
     const isValid = await bcrypt.compare(password, admin.password as string);
 
     if (!isValid) {
-      throw new Error("Password or invalid email");
+      throw new Error('Password or invalid email');
     }
 
-    const token = jwt.sign({ userId: admin._id }, process.env.SECRET as string, {
-      expiresIn: 60 * 60 * 24 * 365,
-    });
+    const token = jwt.sign(
+      { userId: admin._id },
+      process.env.SECRET as string,
+      {
+        expiresIn: 60 * 60 * 24 * 365,
+      }
+    );
 
     res.status(201).json({ token });
-  } catch (error:any) {
+  } catch (error: any) {
     res.status(400).json({ message: error.message });
   }
-}
-export const getTemplates= async (req: Request, res: Response) => {
+};
+export const getTemplates = async (req: Request, res: Response) => {
   try {
     const templates = await Template.find();
     res.status(200).json(templates);
@@ -66,11 +73,12 @@ export const uploadTemplate = async (req: Request, res: Response) => {
   try {
     const { body } = req;
 
-    if (!req.files) return res.json({error:'no file'});
+    if (!req.files) return res.status(400).json({ error: 'no file' });
 
     const file = req.files.file as UploadedFile;
     const fileResp = await cloudinary.uploader.upload(file.tempFilePath, {
-      resource_type: 'auto', folder:'templates'
+      resource_type: 'auto',
+      folder: 'templates',
     });
 
     body.fileUrl = fileResp.secure_url;
@@ -79,7 +87,7 @@ export const uploadTemplate = async (req: Request, res: Response) => {
     const template = await Template.create(body);
     res.status(201).send({ template });
   } catch (error) {
-    res.json({error: error})
+    res.json({ error: error });
     //TODO: Send error
   }
 };
@@ -100,7 +108,7 @@ export const deleteTemplate = async (req: Request, res: Response) => {
     const templates = await Template.find();
     res.status(200).json(templates);
   } catch (error) {
-    res.send({error})
+    res.send({ error });
   }
 };
 
@@ -120,28 +128,31 @@ export const deleteClaim = async (req: Request, res: Response) => {
     const claims = await Claim.find();
     res.status(200).json(claims);
   } catch (error) {
-    res.send({error})
+    res.send({ error });
   }
 };
 
 export const deleteClaims = async (req: Request, res: Response) => {
-
   try {
     const claims = await Claim.find();
     if (!claims) return;
 
     // TODO: destroy all in cloudinary
-    await cloudinary.api.delete_resources_by_prefix('claims/', {resource_type: 'raw', type: 'upload'}, function(error, result) {console.log(result, error); })
-      
+    await cloudinary.api.delete_resources_by_prefix(
+      'claims/',
+      { resource_type: 'raw', type: 'upload' },
+      function (error, result) {
+        console.log(result, error);
+      }
+    );
+
     //   type: 'upload',
     //   resource_type: 'raw',
-
-    
 
     await Claim.deleteMany();
     res.status(200).json(claims);
   } catch (error) {
-    res.send({error})
+    res.send({ error });
   }
 };
 
@@ -151,6 +162,6 @@ export const getAdmins = async (req: Request, res: Response) => {
     res.status(200).json(admins);
   } catch (error: any) {
     // TODO: Type error
-    res.send({error});
+    res.send({ error });
   }
 };
