@@ -127,18 +127,8 @@ export const transactionInfo = async (req: Request, res: Response) => {
           new: true,
         }
       );
-      if (!updatedClaim) {
-        res.status(400).json({ error: 'claim no updated' });
-      } else {
-        try {
-          res.send('entré al then del email');
 
-          await newClaimAlert(process.env.MAILER_USER);
-          console.log('claim: ', claim);
-        } catch (error) {
-          console.log('error email', error);
-        }
-      }
+      await newClaimAlert(process.env.MAILER_USER);
     } else {
       const updatedClaim = await Claim.findByIdAndUpdate(
         reference,
@@ -156,7 +146,6 @@ export const transactionInfo = async (req: Request, res: Response) => {
           new: true,
         }
       );
-      if (!updatedClaim) res.status(400).json({ error: 'claim no updated' });
     }
   } catch (error) {
     res.status(400).json(error);
