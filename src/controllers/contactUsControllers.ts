@@ -10,7 +10,7 @@ import https from 'https';
 import Template from '../models/templates';
 // import {newContactUs} from '../utils/mailer'
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const { newContactUs } = require("../utils/mailer");
+const { newContactUs } = require('../utils/mailer');
 
 cloudinary.config({
   cloud_name: 'me-retracto',
@@ -27,21 +27,26 @@ export const getAllContactUs = async (req: Request, res: Response) => {
   //   res.send('error');
   //   console.log('error: ', error);
   // }
-  console.log('it is fine')
+  console.log('it is fine');
 };
 export const postContactUs = async (req: Request, res: Response) => {
   try {
-    const { body } = req
-    const contactUsReport = await ContactUs.create(body)
+    const { body } = req;
+    const contactUsReport = await ContactUs.create(body);
     res.status(201).send({ contactUsReport });
-    await newContactUs(process.env.MAILER_USER, contactUsReport.name, contactUsReport.email, contactUsReport.message)
+    await newContactUs(
+      process.env.MAILER_USER,
+      contactUsReport.name,
+      contactUsReport.email,
+      contactUsReport.message
+    );
   } catch (error) {
-    res.json(error)
+    res.json(error);
   }
 };
 export const deleteContactUs = async (req: Request, res: Response) => {
-  console.log('it is fine DELETE ALL CONTACT US')
+  console.log('it is fine DELETE ALL CONTACT US');
 };
 export const deleteOneContactUs = async (req: Request, res: Response) => {
-  console.log('it is fine DELETE ONE CONTACT US')
+  console.log('it is fine DELETE ONE CONTACT US');
 };

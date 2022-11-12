@@ -8,6 +8,7 @@ import PizZip from 'pizzip';
 import Docxtemplater from 'docxtemplater';
 import https from 'https';
 import Template from '../models/templates';
+const { newClaimAlert } = require('../utils/mailer');
 
 cloudinary.config({
   cloud_name: 'me-retracto',
@@ -21,22 +22,19 @@ export const getClaims = async (req: Request, res: Response) => {
     res.status(200).json(claims);
   } catch (error: any) {
     // TODO: Type error
-    res.send('error');
+    res.status(400).json({ error });
   }
 };
 
-export const postPreviousCheckClaim =async (req: Request, res: Response) => {
+export const postPreviousCheckClaim = async (req: Request, res: Response) => {
   try {
-    
-    const {id} = req.params
-    const { claimFields } = req.body
+    const { id } = req.params;
+    const { claimFields } = req.body;
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    console.log('claimfields: ', claimFields)
-    const {payment, ...claimData} = claimFields
-    
-    console.log('claimData: ', claimData)
+    const { payment, ...claimData } = claimFields;
+
     const template = await Template.findById({ _id: id });
-    if (!template) return res.status(404).json({"error":"not found"});
+    if (!template) return res.status(404).json({ error: 'not found' });
     const newClaim: unknown = {
       templateType: template.name,
       templateInternalCode: template.internalCode,
@@ -44,97 +42,43 @@ export const postPreviousCheckClaim =async (req: Request, res: Response) => {
       fileUid: '-',
       revisionStatus: 'notChecked',
       claimFields: {
-        ...claimData
+        ...claimData,
       },
       payment: {
         status: 'notPaid',
-        amount: template.price
-      }
-    }
-    
-    console.log('newClaim: ', newClaim)
+        amount: template.price,
+      },
+    };
+
     const claimCreated = await Claim.create(newClaim);
+    if (!claimCreated) res.status(400).json({ error: 'claim not created' });
 
     res.status(201).send({ claimCreated });
   } catch (error) {
-    res.status(404).json({error})
-  }
-}
-export const postClaimRender = async (req: Request, res: Response) => {
-  const { id } = req.params;
-  const { body } = req;
-  
-  const template = await Template.findById({ _id: id });
-  //TODO: send error when claim is not found
-  if (!template) return res.status(404).json({"error":"not found"});
-
-  const file = fs.createWriteStream(path.resolve(__dirname, 'temp.docx'));
-  await getFile(file, template.fileUrl);
-
-  const content = fs.readFileSync(
-    path.resolve(__dirname, 'temp.docx'),
-    'binary'
-  );
-  
-  const zip = new PizZip(content);
-
-  const doc = new Docxtemplater(zip, {
-    paragraphLoop: true,
-    linebreaks: true,
-  });
-
-  // Render the document (Replace {first_name} by John, {last_name} by Doe, ...)
-  doc.render(body.claimFields);
-
-  const buf: Buffer = doc.getZip().generate({
-    type: 'nodebuffer',
-    // compression: DEFLATE adds a compression step.
-    // For a 50MB output document, expect 500ms additional CPU time
-    compression: 'DEFLATE',
-  });
-
-  // buf is a nodejs Buffer, you can either write it to a file or res.send it with express for example.
-  fs.writeFileSync(path.resolve(__dirname, 'output.docx'), buf);
-
-  try {
-    const claimUrl = await cloudinary.uploader.upload(path.resolve(__dirname, 'output.docx'), {resource_type: 'auto', folder: 'claims'} )
-    const newClaimBody = {
-      name: template.name,
-      internalCode: template.internalCode,
-      fileUrl: claimUrl.secure_url,
-      fileUid: claimUrl.public_id,
-      defendant: body.claimFields.defendantName,
-      claimer: body.claimFields.claimerName,
-      claimerEmail: body.claimFields.claimerEmail,
-      payment: {
-        amount: template.price,
-      }
-    }
-
-    const newClaim = await Claim.create(newClaimBody);
-    res.status(201).send({ newClaim });
-  } catch (error) {
-    res.json(error)
+    res.status(404).json({ error });
   }
 };
 
 export const transactionInfo = async (req: Request, res: Response) => {
   try {
-    // console.log('REq: ', req.body.data.transaction.reference)
-    const {reference, id, amount_in_cents, currency, status, payment_method_type} = req.body.data.transaction
-    
-    console.log('refrence: ',reference)
-    const claim = await Claim.findById({_id:reference})
-    console.log('claim: ', claim)
-    console.log('STATUS: ', status)
-    if (!claim) return res.json({"error":"claim not fond"}) ;
-  
-    res.status(200).send({})
-    
-    if(status === 'APPROVED') {
+    const {
+      reference,
+      id,
+      amount_in_cents,
+      currency,
+      status,
+      payment_method_type,
+    } = req.body.data.transaction;
+
+    const claim = await Claim.findById({ _id: reference });
+    if (!claim) return res.status(400).json({ error: 'claim not fond' });
+
+    res.status(200).send({});
+
+    if (status === 'APPROVED') {
       const template = await Template.findById({ _id: claim?.claimFields?.id });
-      //TODO: send error when claim is not found
-      if (!template) return res.status(404).json({"error":"not found"});
+      if (!template)
+        return res.status(404).json({ error: 'template not found' });
 
       const file = fs.createWriteStream(path.resolve(__dirname, 'temp.docx'));
       await getFile(file, template.fileUrl);
@@ -143,55 +87,86 @@ export const transactionInfo = async (req: Request, res: Response) => {
         path.resolve(__dirname, 'temp.docx'),
         'binary'
       );
-      
-      const zip = new PizZip(content);
 
+      const zip = new PizZip(content);
       const doc = new Docxtemplater(zip, {
         paragraphLoop: true,
         linebreaks: true,
       });
 
-      // Render the document (Replace {first_name} by John, {last_name} by Doe, ...)
       doc.render(claim?.claimFields);
 
       const buf: Buffer = doc.getZip().generate({
         type: 'nodebuffer',
-        // compression: DEFLATE adds a compression step.
-        // For a 50MB output document, expect 500ms additional CPU time
         compression: 'DEFLATE',
       });
 
-      // buf is a nodejs Buffer, you can either write it to a file or res.send it with express for example.
       fs.writeFileSync(path.resolve(__dirname, 'output.docx'), buf);
 
-      const claimUrl = await cloudinary.uploader.upload(path.resolve(__dirname, 'output.docx'), {resource_type: 'auto', folder: 'claims'} )
+      const claimUrl = await cloudinary.uploader.upload(
+        path.resolve(__dirname, 'output.docx'),
+        { resource_type: 'auto', folder: 'claims' }
+      );
 
-      const updatedClaim = await Claim.findByIdAndUpdate(reference,   { fileUrl:claimUrl.secure_url, fileUid: claimUrl.public_id, transactionId: id, payment: {status, amount: amount_in_cents, currency, paymentMethod: payment_method_type, transactionId: id, }},
+      const updatedClaim = await Claim.findByIdAndUpdate(
+        reference,
+        {
+          fileUrl: claimUrl.secure_url,
+          fileUid: claimUrl.public_id,
+          transactionId: id,
+          payment: {
+            status,
+            amount: amount_in_cents,
+            currency,
+            paymentMethod: payment_method_type,
+            transactionId: id,
+          },
+        },
         {
           new: true,
-        });
-    }else {
-      const updatedClaim = await Claim.findByIdAndUpdate(reference,   { transactionId: id, payment: {status, amount: amount_in_cents, currency, paymentMethod: payment_method_type, transactionId: id, }},
+        }
+      );
+      if (!updatedClaim) {
+        res.status(400).json({ error: 'claim no updated' });
+      } else {
+        res.send('entré al then del email');
+        await newClaimAlert(process.env.MAILER_USER);
+        console.log('claim: ', claim);
+      }
+    } else {
+      const updatedClaim = await Claim.findByIdAndUpdate(
+        reference,
+        {
+          transactionId: id,
+          payment: {
+            status,
+            amount: amount_in_cents,
+            currency,
+            paymentMethod: payment_method_type,
+            transactionId: id,
+          },
+        },
         {
           new: true,
-        });
-        console.log('UPDATEDCLAIM: ', updatedClaim)
+        }
+      );
+      if (!updatedClaim) res.status(400).json({ error: 'claim no updated' });
     }
-
   } catch (error) {
-    console.log('ERROR: ', error)
+    res.status(400).json(error);
   }
-}
+};
 
 export const getClaimByTransactionId = async (req: Request, res: Response) => {
   try {
-    const { transactionId } = req.params
-    console.log('transactionId: ', transactionId)
-    const claim = await Claim.find({transactionId});
+    const { transactionId } = req.params;
+    console.log('transactionId: ', transactionId);
+    const claim = await Claim.find({ transactionId });
 
-    if (claim.length === 0) return res.status(404).json({"error":"claim not found"}) ;
+    if (claim.length === 0)
+      return res.status(404).json({ error: 'claim not found' });
 
-    res.status(200).json({claim});
+    res.status(200).json({ claim });
   } catch (error: any) {
     // TODO: Type error
     res.send('error');
