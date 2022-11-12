@@ -8,6 +8,7 @@ import PizZip from 'pizzip';
 import Docxtemplater from 'docxtemplater';
 import https from 'https';
 import Template from '../models/templates';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const { newClaimAlert } = require('../utils/mailer');
 
 cloudinary.config({
@@ -129,9 +130,14 @@ export const transactionInfo = async (req: Request, res: Response) => {
       if (!updatedClaim) {
         res.status(400).json({ error: 'claim no updated' });
       } else {
-        res.send('entré al then del email');
-        await newClaimAlert(process.env.MAILER_USER);
-        console.log('claim: ', claim);
+        try {
+          res.send('entré al then del email');
+
+          await newClaimAlert(process.env.MAILER_USER);
+          console.log('claim: ', claim);
+        } catch (error) {
+          console.log('error email', error);
+        }
       }
     } else {
       const updatedClaim = await Claim.findByIdAndUpdate(
