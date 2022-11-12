@@ -53,7 +53,7 @@ async function newClaimAlert(email: string) {
           <h1>Hola Admin,</h1>
           <p>
           Recién llegó una nueva reclamación para revisión. Porfavor, revisa el listado.</p><br/><br/>
-          <p>Cordialmente,</p><br/>
+          <p>Cordialmente,</p><br/><br/>
           <p>Equipo de MeRetracto.</p><br/>
       </div>
       `,
