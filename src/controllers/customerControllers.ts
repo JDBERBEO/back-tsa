@@ -8,6 +8,8 @@ import PizZip from 'pizzip';
 import Docxtemplater from 'docxtemplater';
 import https from 'https';
 import Template from '../models/templates';
+import fileUploader from '../utils/fileUploader';
+import formatBytes from '../utils/formatBytes';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { newClaimAlert } = require('../utils/mailer');
 
@@ -29,8 +31,35 @@ export const getClaims = async (req: Request, res: Response) => {
 
 export const postPreviousCheckClaim = async (req: Request, res: Response) => {
   try {
+    let filesArray;
+    if (req.files) {
+      filesArray = Object.entries(req.files).map((e) => e[1]);
+      const bytesTotal = filesArray.reduce((accumulator, object: any) => {
+        return accumulator + object.size;
+      }, 0);
+
+      if (bytesTotal > 10000000) {
+        res.status(404).json({ error: 'file limit' });
+      }
+      const totalSize = formatBytes(bytesTotal);
+    } else {
+      res.status(404).json({ error: 'error in files' });
+    }
+
+    filesArray?.map((file) => {
+      fileUploader(file);
+    });
+
     const { id } = req.params;
-    const { claimFields } = req.body;
+    const claimFields: any = {};
+    let splitted;
+
+    const keys = Object.keys(req.body);
+
+    for (let i = 0; i < keys.length; i++) {
+      splitted = keys[i].split('.');
+      claimFields[splitted[1]] = req.body[keys[i]];
+    }
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { payment, ...claimData } = claimFields;
 
@@ -155,7 +184,6 @@ export const transactionInfo = async (req: Request, res: Response) => {
 export const getClaimByTransactionId = async (req: Request, res: Response) => {
   try {
     const { transactionId } = req.params;
-    console.log('transactionId: ', transactionId);
     const claim = await Claim.find({ transactionId });
 
     if (claim.length === 0)

@@ -12,6 +12,5 @@ customerRouter.get('/', getClaims);
 customerRouter.post('/transactionInfo', transactionInfo);
 customerRouter.post('/:id', postPreviousCheckClaim);
 customerRouter.get('/getClaim/:transactionId', getClaimByTransactionId);
-// customerRouter.post('/:id', postClaimRender);
 
 export default customerRouter;

@@ -27,7 +27,6 @@ export const getAllContactUs = async (req: Request, res: Response) => {
   //   res.send('error');
   //   console.log('error: ', error);
   // }
-  console.log('it is fine');
 };
 export const postContactUs = async (req: Request, res: Response) => {
   try {
