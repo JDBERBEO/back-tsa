@@ -8,53 +8,54 @@ interface Claim extends Document {
   revisionStatus: string;
   transactionId?: string;
   payment?: object;
-  claimFields?: ClaimFields
+  claimFields?: ClaimFields;
 }
 
 interface ClaimFields extends Claim {
-  proofs: string,
-  templateId: string,
-  acceptTerms: boolean,
-  defendantName: string,
-  agreementDate: string,
-  claimerName: string,
-  claimerIdNumber: string,
-  claimerCity: string,
-  claimerAddress: string,
-  claimerEmail: string,
-  documentMonth: string,
-  documentYear: string,
-  casePrice: string,
-  facts: string
+  proofs: string;
+  attachProofs: string[];
+  templateId: string;
+  acceptTerms: boolean;
+  defendantName: string;
+  agreementDate: string;
+  claimerName: string;
+  claimerIdNumber: string;
+  claimerCity: string;
+  claimerAddress: string;
+  claimerEmail: string;
+  documentMonth: string;
+  documentYear: string;
+  casePrice: string;
+  facts: string;
 }
 
 const ClaimSchema: Schema = new Schema(
   {
-    templateType: { 
-    type: String, 
-    required: true 
-  },
-  templateInternalCode: { 
-    type: String, 
-    required: true 
-  },
-  fileUrl: { 
-    type: String, 
-    required: true 
-  },
-  fileUid: { 
-    type: String, 
-    required: true 
-  },
-  revisionStatus: {
-    type: String,
-    default: "notChecked"
-  },
-  transactionId: {
-    type:String,
-  },
-  payment: {
-    type: Object,
+    templateType: {
+      type: String,
+      required: true,
+    },
+    templateInternalCode: {
+      type: String,
+      required: true,
+    },
+    fileUrl: {
+      type: String,
+      required: true,
+    },
+    fileUid: {
+      type: String,
+      required: true,
+    },
+    revisionStatus: {
+      type: String,
+      default: 'notChecked',
+    },
+    transactionId: {
+      type: String,
+    },
+    payment: {
+      type: Object,
       status: '',
       amount: 0,
       currency: '',
@@ -63,10 +64,11 @@ const ClaimSchema: Schema = new Schema(
       storeResponse: '',
       paymentMethod: '',
       transactionId: '',
-  },
-  claimFields: {
-    type: Object,
+    },
+    claimFields: {
+      type: Object,
       proofs: '',
+      attachProofs: [],
       templateId: '',
       acceptTerms: false,
       defendantName: '',
@@ -79,17 +81,18 @@ const ClaimSchema: Schema = new Schema(
       documentMonth: '',
       documentYear: '',
       casePrice: '',
-      facts: ''
-  }
-  // expireAt: {
-  //   type: Date,
-  //   default: Date.now(),
-  //   expires: 30
-  // }
+      facts: '',
+    },
+    // expireAt: {
+    //   type: Date,
+    //   default: Date.now(),
+    //   expires: 30
+    // }
   },
   {
     timestamps: true,
-  });
+  }
+);
 
 const Claim: Model<Claim> = model('Claim', ClaimSchema);
 
