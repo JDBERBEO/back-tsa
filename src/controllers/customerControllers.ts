@@ -184,7 +184,9 @@ export const transactionInfo = async (req: Request, res: Response) => {
 export const getClaimByTransactionId = async (req: Request, res: Response) => {
   try {
     const { transactionId } = req.params;
+    console.log('transactionID: ', transactionId);
     const claim = await Claim.find({ transactionId });
+    console.log('claim: ', claim);
 
     if (claim.length === 0)
       return res.status(404).json({ error: 'claim not found' });
