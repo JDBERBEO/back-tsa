@@ -14,6 +14,8 @@ const fileUploader = async (file: UploadedFile | UploadedFile[]) => {
       folder: 'claims',
       public_id: newFile.name,
     });
+
+    return newFileResp;
   } catch (error) {
     console.log('Uploading ERROR: ', error);
   }

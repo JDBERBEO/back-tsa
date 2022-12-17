@@ -31,10 +31,13 @@ export const getClaims = async (req: Request, res: Response) => {
 
 export const postPreviousCheckClaim = async (req: Request, res: Response) => {
   try {
-    let filesArray;
+    let filesArray: any;
+    const claimFields: any = {
+      attachProofs: [],
+    };
     if (req.files) {
       filesArray = Object.entries(req.files).map((e) => e[1]);
-      const bytesTotal = filesArray.reduce((accumulator, object: any) => {
+      const bytesTotal = filesArray.reduce((accumulator: any, object: any) => {
         return accumulator + object.size;
       }, 0);
 
@@ -46,12 +49,24 @@ export const postPreviousCheckClaim = async (req: Request, res: Response) => {
       res.status(404).json({ error: 'error in files' });
     }
 
-    filesArray?.map((file) => {
-      fileUploader(file);
-    });
+    for (let i = 0; i < filesArray.length; i++) {
+      const file = filesArray[i];
+
+      const newFile = file as UploadedFile;
+      const newFileResp = await cloudinary.uploader.upload(
+        newFile.tempFilePath,
+        {
+          resource_type: 'auto',
+          folder: 'claims',
+          public_id: newFile.name,
+        }
+      );
+      if (newFileResp) {
+        claimFields.attachProofs.push(newFileResp.secure_url);
+      }
+    }
 
     const { id } = req.params;
-    const claimFields: any = {};
     let splitted;
 
     const keys = Object.keys(req.body);
