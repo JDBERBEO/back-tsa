@@ -115,12 +115,15 @@ export const transactionInfo = async (req: Request, res: Response) => {
       payment_method_type,
     } = req.body.data.transaction;
 
+    console.log('BODY: ', req.body.data.transaction);
     const claim = await Claim.findById({ _id: reference });
-    if (!claim) return res.status(400).json({ error: 'claim not fond' });
+    if (!claim) return res.status(400).json({ error: 'claim not found' });
 
-    res.status(200).send({});
+    console.log('CLAIM transaction info: ', claim);
+    // res.status(200).send({});
 
     if (status === 'APPROVED') {
+      console.log('entré al aprroved');
       const template = await Template.findById({ _id: claim?.claimFields?.id });
       if (!template)
         return res.status(404).json({ error: 'template not found' });
@@ -153,6 +156,7 @@ export const transactionInfo = async (req: Request, res: Response) => {
         { resource_type: 'auto', folder: 'claims' }
       );
 
+      console.log('claimUrl desde transaction: ', claimUrl);
       const updatedClaim = await Claim.findByIdAndUpdate(
         reference,
         {
@@ -172,8 +176,10 @@ export const transactionInfo = async (req: Request, res: Response) => {
         }
       );
 
+      console.log('updated Claim desde transaction: ', updatedClaim);
       await newClaimAlert(process.env.MAILER_USER);
     } else {
+      console.log('entre al else de transaction');
       const updatedClaim = await Claim.findByIdAndUpdate(
         reference,
         {
@@ -190,6 +196,7 @@ export const transactionInfo = async (req: Request, res: Response) => {
           new: true,
         }
       );
+      console.log('updatedClaim: ', updatedClaim);
     }
   } catch (error) {
     res.status(400).json(error);
