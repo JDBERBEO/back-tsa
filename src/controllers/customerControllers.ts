@@ -1,15 +1,12 @@
 import Claim from '../models/claims';
 import { Request, Response } from 'express';
 import { v2 as cloudinary } from 'cloudinary';
-import { UploadedFile } from 'express-fileupload';
-import path, { dirname } from 'path';
+import path from 'path';
 import fs from 'fs';
 import PizZip from 'pizzip';
 import Docxtemplater from 'docxtemplater';
 import https from 'https';
 import Template from '../models/templates';
-import fileUploader from '../utils/fileUploader';
-import formatBytes from '../utils/formatBytes';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { newClaimAlert } = require('../utils/mailer');
 
@@ -104,6 +101,17 @@ export const postPreviousCheckClaim = async (req: Request, res: Response) => {
   }
 };
 
+export const updateClaimWithFile = async (req: Request, res: Response) => {
+  try {
+    console.log('entre');
+    const { id } = req.params;
+    const claim = await Claim.findById({ _id: id });
+    return { claim };
+  } catch (error) {
+    return { error };
+  }
+};
+
 export const transactionInfo = async (req: Request, res: Response) => {
   try {
     const {
@@ -153,7 +161,7 @@ export const transactionInfo = async (req: Request, res: Response) => {
         { resource_type: 'auto', folder: 'claims' }
       );
 
-      const updatedClaim = await Claim.findByIdAndUpdate(
+      await Claim.findByIdAndUpdate(
         reference,
         {
           fileUrl: claimUrl.secure_url,
@@ -174,7 +182,7 @@ export const transactionInfo = async (req: Request, res: Response) => {
 
       await newClaimAlert(process.env.MAILER_USER);
     } else {
-      const updatedClaim = await Claim.findByIdAndUpdate(
+      await Claim.findByIdAndUpdate(
         reference,
         {
           transactionId: id,
