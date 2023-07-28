@@ -7,6 +7,7 @@ import PizZip from 'pizzip';
 import Docxtemplater from 'docxtemplater';
 import https from 'https';
 import Template from '../models/templates';
+import formatBytes from '../utils/formatBytes';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { newClaimAlert } = require('../utils/mailer');
 
