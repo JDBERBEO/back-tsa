@@ -106,8 +106,10 @@ export const updateClaimWithFile = async (req: Request, res: Response) => {
   try {
     console.log('entre');
     const { id } = req.params;
+    console.log('id,', id);
     const claim = await Claim.findById({ _id: id });
-    return { claim };
+    console.log('claim: ', claim);
+    return res.status(201).json({ claim });
   } catch (error) {
     return { error };
   }
