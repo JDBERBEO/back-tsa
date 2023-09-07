@@ -8,6 +8,7 @@ import Docxtemplater from 'docxtemplater';
 import https from 'https';
 import Template from '../models/templates';
 import formatBytes from '../utils/formatBytes';
+import { UploadedFile } from 'express-fileupload';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { newClaimAlert } = require('../utils/mailer');
 
@@ -111,37 +112,46 @@ export const updateClaimWithFile = async (req: Request, res: Response) => {
     console.log('claim: ', claim);
     console.log('request: ', req.files);
 
-    // if (req.files) {
-    //   filesArray = Object.entries(req.files).map((e) => e[1]);
-    //   const bytesTotal = filesArray.reduce((accumulator: any, object: any) => {
-    //     return accumulator + object.size;
-    //   }, 0);
+    let filesArray: any;
+    // const claimFields: any = {
+    //   attachProofs: [],
+    // };
 
-    //   if (bytesTotal > 10000000) {
-    //     res.status(404).json({ error: 'file limit' });
-    //   }
-    //   const totalSize = formatBytes(bytesTotal);
-    // } else {
-    //   res.status(404).json({ error: 'error in files' });
-    // }
+    if (req.files) {
+      filesArray = Object.entries(req.files).map((e) => e[1]);
+      console.log('FILESARRAY: ', filesArray);
+      const bytesTotal = filesArray.reduce((accumulator: any, object: any) => {
+        return accumulator + object.size;
+      }, 0);
 
-    // for (let i = 0; i < filesArray.length; i++) {
-    //   const file = filesArray[i];
+      if (bytesTotal > 10000000) {
+        res.status(404).json({ error: 'file limit' });
+      }
+      const totalSize = formatBytes(bytesTotal);
+    } else {
+      res.status(404).json({ error: 'error in files' });
+    }
 
-    //   const newFile = file as UploadedFile;
-    //   const newFileResp = await cloudinary.uploader.upload(
-    //     newFile.tempFilePath,
-    //     {
-    //       resource_type: 'auto',
-    //       folder: 'claims',
-    //       public_id: newFile.name,
-    //     }
-    //   );
-    //   if (newFileResp) {
-    //     claimFields.attachProofs.push(newFileResp.secure_url);
-    //   }
-    // }
-    return res.status(201).json({ claim });
+    for (let i = 0; i < filesArray.length; i++) {
+      const file = filesArray[i];
+
+      const newFile = file as UploadedFile;
+      const newFileResp = await cloudinary.uploader.upload(
+        newFile.tempFilePath,
+        {
+          resource_type: 'auto',
+          folder: 'claims',
+          public_id: newFile.name,
+        }
+      );
+      if (newFileResp) {
+        claim?.claimFields?.attachProofs.push(newFileResp.secure_url);
+      }
+    }
+
+    const updatedClaim = await Claim.findByIdAndUpdate({ _id: id });
+    console.log('updatedClaim', updatedClaim);
+    return res.status(201).json({ claim: updatedClaim });
   } catch (error) {
     return { error };
   }
