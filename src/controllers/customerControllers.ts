@@ -109,6 +109,38 @@ export const updateClaimWithFile = async (req: Request, res: Response) => {
     console.log('id,', id);
     const claim = await Claim.findById({ _id: id });
     console.log('claim: ', claim);
+    console.log('request: ', req.files);
+
+    // if (req.files) {
+    //   filesArray = Object.entries(req.files).map((e) => e[1]);
+    //   const bytesTotal = filesArray.reduce((accumulator: any, object: any) => {
+    //     return accumulator + object.size;
+    //   }, 0);
+
+    //   if (bytesTotal > 10000000) {
+    //     res.status(404).json({ error: 'file limit' });
+    //   }
+    //   const totalSize = formatBytes(bytesTotal);
+    // } else {
+    //   res.status(404).json({ error: 'error in files' });
+    // }
+
+    // for (let i = 0; i < filesArray.length; i++) {
+    //   const file = filesArray[i];
+
+    //   const newFile = file as UploadedFile;
+    //   const newFileResp = await cloudinary.uploader.upload(
+    //     newFile.tempFilePath,
+    //     {
+    //       resource_type: 'auto',
+    //       folder: 'claims',
+    //       public_id: newFile.name,
+    //     }
+    //   );
+    //   if (newFileResp) {
+    //     claimFields.attachProofs.push(newFileResp.secure_url);
+    //   }
+    // }
     return res.status(201).json({ claim });
   } catch (error) {
     return { error };
