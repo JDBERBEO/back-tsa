@@ -109,8 +109,8 @@ export const updateClaimWithFile = async (req: Request, res: Response) => {
     const { id } = req.params;
     console.log('id,', id);
     const claim = await Claim.findById({ _id: id });
-    console.log('claim: ', claim);
-    console.log('request: ', req.files);
+    // console.log('claim: ', claim);
+    // console.log('request: ', req.files);
 
     let filesArray: any;
     // const claimFields: any = {
@@ -149,7 +149,12 @@ export const updateClaimWithFile = async (req: Request, res: Response) => {
       }
     }
 
-    const updatedClaim = await Claim.findByIdAndUpdate({ _id: id });
+    console.log('Claim: ', claim);
+
+    const updatedClaim = await Claim.findByIdAndUpdate(
+      { _id: id },
+      { claimFields: claim?.claimFields }
+    );
     console.log('updatedClaim', updatedClaim);
     return res.status(201).json({ claim: updatedClaim });
   } catch (error) {
