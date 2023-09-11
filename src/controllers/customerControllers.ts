@@ -105,9 +105,7 @@ export const postPreviousCheckClaim = async (req: Request, res: Response) => {
 
 export const updateClaimWithFile = async (req: Request, res: Response) => {
   try {
-    console.log('entre');
     const { id } = req.params;
-    console.log('id,', id);
     const claim = await Claim.findById({ _id: id });
     // console.log('claim: ', claim);
     // console.log('request: ', req.files);
@@ -116,10 +114,8 @@ export const updateClaimWithFile = async (req: Request, res: Response) => {
     // const claimFields: any = {
     //   attachProofs: [],
     // };
-
     if (req.files) {
       filesArray = Object.entries(req.files).map((e) => e[1]);
-      console.log('FILESARRAY: ', filesArray);
       const bytesTotal = filesArray.reduce((accumulator: any, object: any) => {
         return accumulator + object.size;
       }, 0);
@@ -131,7 +127,6 @@ export const updateClaimWithFile = async (req: Request, res: Response) => {
     } else {
       res.status(404).json({ error: 'error in files' });
     }
-
     for (let i = 0; i < filesArray.length; i++) {
       const file = filesArray[i];
 
@@ -148,17 +143,15 @@ export const updateClaimWithFile = async (req: Request, res: Response) => {
         claim?.claimFields?.attachProofs.push(newFileResp.secure_url);
       }
     }
-
-    console.log('Claim: ', claim);
-
     const updatedClaim = await Claim.findByIdAndUpdate(
       { _id: id },
       { claimFields: claim?.claimFields }
     );
-    console.log('updatedClaim', updatedClaim);
-    return res.status(201).json({ claim: updatedClaim });
-  } catch (error) {
-    return { error };
+    throw new Error('This is a provoked error!');
+    return res.status(201).json({ status: 'claimCreated' });
+  } catch (error: any) {
+    console.log('error name: ', error);
+    return res.status(400).json({ error });
   }
 };
 
