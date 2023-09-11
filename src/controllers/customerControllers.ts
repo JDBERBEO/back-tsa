@@ -147,10 +147,8 @@ export const updateClaimWithFile = async (req: Request, res: Response) => {
       { _id: id },
       { claimFields: claim?.claimFields }
     );
-    throw new Error('This is a provoked error!');
     return res.status(201).json({ status: 'claimCreated' });
-  } catch (error: any) {
-    console.log('error name: ', error);
+  } catch (error) {
     return res.status(400).json({ error });
   }
 };
