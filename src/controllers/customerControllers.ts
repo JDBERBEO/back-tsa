@@ -10,7 +10,7 @@ import Template from '../models/templates';
 import formatBytes from '../utils/formatBytes';
 import { UploadedFile } from 'express-fileupload';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const { newClaimAlert } = require('../utils/mailer');
+const { newClaimAlert, downloadModels } = require('../utils/mailer');
 
 cloudinary.config({
   cloud_name: 'me-retracto',
@@ -221,6 +221,10 @@ export const transactionInfo = async (req: Request, res: Response) => {
         }
       );
 
+      const currentUrlPreviusClaim =
+        'https://res.cloudinary.com/me-retracto/raw/upload/v1670812684/previous%20complaints%20models/reclamacion_previa_e08ljt.docx';
+
+      await downloadModels(process.env.MAILER_USER, currentUrlPreviusClaim);
       await newClaimAlert(process.env.MAILER_USER);
     } else {
       await Claim.findByIdAndUpdate(
