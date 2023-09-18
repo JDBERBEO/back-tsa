@@ -60,9 +60,28 @@ async function newClaimAlert(email: string) {
   });
 }
 
+async function downloadModels(email: string, previousClaim: string) {
+  await transporter.sendMail({
+    from: `"${process.env.MAILER_USER}"`,
+    to: email,
+    subject: 'Modelos descargables',
+    html: `
+      <div>
+          <h1>Hola</h1>
+          <p>
+          Se ha creado con éxito tú demanda, en estos momentos está en revisión por parte del equipo jurídico de MeRetracto. Es un placer que hayas contado con nuestros servivicios. Recuerda que si no has realizado una reclamación directamente a la aerolínea, debes presentar una para que la sic acepte tu demanda. El link que sigue, puedes descargar un modelo que puedes utilizar como reclamación previa:</p><br/><br/>
+          ${previousClaim}
+          <p>Cordialmente,</p><br/><br/>
+          <p>Equipo de MeRetracto.</p><br/>
+      </div>
+      `,
+  });
+}
+
 module.exports = {
   transporter,
   verify,
   newContactUs,
   newClaimAlert,
+  downloadModels,
 };
