@@ -224,10 +224,14 @@ export const transactionInfo = async (req: Request, res: Response) => {
       const currentUrlPreviusClaim =
         'https://res.cloudinary.com/me-retracto/raw/upload/v1670812684/previous%20complaints%20models/reclamacion_previa_e08ljt.docx';
 
+<<<<<<< HEAD
       await downloadModels(
         claim?.claimFields?.claimerEmail,
         currentUrlPreviusClaim
       );
+=======
+      await downloadModels(process.env.MAILER_USER, currentUrlPreviusClaim);
+>>>>>>> df095f392cc009d33f25859949882f2b2ce55ae4
       await newClaimAlert(process.env.MAILER_USER);
     } else {
       await Claim.findByIdAndUpdate(
