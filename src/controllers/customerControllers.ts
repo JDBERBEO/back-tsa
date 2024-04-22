@@ -120,9 +120,47 @@ export const updateClaimWithFile = async (req: Request, res: Response) => {
         });
       }
     }
+
+    const template = await Template.findById({ _id: claim?.claimFields?.id });
+    if (!template) return res.status(404).json({ error: 'template not found' });
+
+    const file = fs.createWriteStream(path.resolve(__dirname, 'temp.docx'));
+    await getFile(file, template.fileUrl);
+
+    const content = fs.readFileSync(
+      path.resolve(__dirname, 'temp.docx'),
+      'binary'
+    );
+
+    const zip = new PizZip(content);
+    const doc = new Docxtemplater(zip, {
+      paragraphLoop: true,
+      linebreaks: true,
+    });
+
+    console.log('ClaimFields AFTER TRANSFER approve: ', claim?.claimFields);
+
+    doc.render(claim?.claimFields);
+
+    const buf: Buffer = doc.getZip().generate({
+      type: 'nodebuffer',
+      compression: 'DEFLATE',
+    });
+
+    fs.writeFileSync(path.resolve(__dirname, 'output.docx'), buf);
+
+    const claimUrl = await cloudinary.uploader.upload(
+      path.resolve(__dirname, 'output.docx'),
+      { resource_type: 'auto', folder: 'claims' }
+    );
+
     const updatedClaim = await Claim.findByIdAndUpdate(
       { _id: id },
-      { claimFields: claim?.claimFields }
+      {
+        fileUrl: claimUrl.secure_url,
+        fileUid: claimUrl.public_id,
+        claimFields: claim?.claimFields,
+      }
     );
     return res.status(201).json({ status: 'claimCreated' });
   } catch (error) {
@@ -147,45 +185,45 @@ export const transactionInfo = async (req: Request, res: Response) => {
     // res.status(200).send({});
 
     if (status === 'APPROVED') {
-      const template = await Template.findById({ _id: claim?.claimFields?.id });
-      if (!template)
-        return res.status(404).json({ error: 'template not found' });
+      // const template = await Template.findById({ _id: claim?.claimFields?.id });
+      // if (!template)
+      //   return res.status(404).json({ error: 'template not found' });
 
-      const file = fs.createWriteStream(path.resolve(__dirname, 'temp.docx'));
-      await getFile(file, template.fileUrl);
+      // const file = fs.createWriteStream(path.resolve(__dirname, 'temp.docx'));
+      // await getFile(file, template.fileUrl);
 
-      const content = fs.readFileSync(
-        path.resolve(__dirname, 'temp.docx'),
-        'binary'
-      );
+      // const content = fs.readFileSync(
+      //   path.resolve(__dirname, 'temp.docx'),
+      //   'binary'
+      // );
 
-      const zip = new PizZip(content);
-      const doc = new Docxtemplater(zip, {
-        paragraphLoop: true,
-        linebreaks: true,
-      });
+      // const zip = new PizZip(content);
+      // const doc = new Docxtemplater(zip, {
+      //   paragraphLoop: true,
+      //   linebreaks: true,
+      // });
 
-      console.log('ClaimFields in transfer approve: ', claim?.claimFields);
+      // console.log('ClaimFields in transfer approve: ', claim?.claimFields);
 
-      doc.render(claim?.claimFields);
+      // doc.render(claim?.claimFields);
 
-      const buf: Buffer = doc.getZip().generate({
-        type: 'nodebuffer',
-        compression: 'DEFLATE',
-      });
+      // const buf: Buffer = doc.getZip().generate({
+      //   type: 'nodebuffer',
+      //   compression: 'DEFLATE',
+      // });
 
-      fs.writeFileSync(path.resolve(__dirname, 'output.docx'), buf);
+      // fs.writeFileSync(path.resolve(__dirname, 'output.docx'), buf);
 
-      const claimUrl = await cloudinary.uploader.upload(
-        path.resolve(__dirname, 'output.docx'),
-        { resource_type: 'auto', folder: 'claims' }
-      );
+      // const claimUrl = await cloudinary.uploader.upload(
+      //   path.resolve(__dirname, 'output.docx'),
+      //   { resource_type: 'auto', folder: 'claims' }
+      // );
 
       await Claim.findByIdAndUpdate(
         reference,
         {
-          fileUrl: claimUrl.secure_url,
-          fileUid: claimUrl.public_id,
+          // fileUrl: claimUrl.secure_url,
+          // fileUid: claimUrl.public_id,
           transactionId: id,
           payment: {
             status,
