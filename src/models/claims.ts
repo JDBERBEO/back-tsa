@@ -13,13 +13,14 @@ interface Claim extends Document {
 
 interface ClaimFields extends Claim {
   proofs: string;
-  attachProofs: string[];
+  attachProofs: { name: string; url: string }[];
   templateId: string;
   acceptTerms: boolean;
   defendantName: string;
   agreementDate: string;
   claimerName: string;
   claimerIdNumber: string;
+  claimerIdCity: string;
   claimerCity: string;
   claimerAddress: string;
   claimerEmail: string;
@@ -75,6 +76,7 @@ const ClaimSchema: Schema = new Schema(
       agreementDate: '',
       claimerName: '',
       claimerIdNumber: '',
+      claimerIdCity: '',
       claimerCity: '',
       claimerAddress: '',
       claimerEmail: '',
