@@ -34,46 +34,20 @@ export const postPreviousCheckClaim = async (req: Request, res: Response) => {
     const claimFields: any = {
       attachProofs: [],
     };
-    // if (req.files) {
-    //   filesArray = Object.entries(req.files).map((e) => e[1]);
-    //   const bytesTotal = filesArray.reduce((accumulator: any, object: any) => {
-    //     return accumulator + object.size;
-    //   }, 0);
-
-    //   if (bytesTotal > 10000000) {
-    //     res.status(404).json({ error: 'file limit' });
-    //   }
-    //   const totalSize = formatBytes(bytesTotal);
-    // } else {
-    //   res.status(404).json({ error: 'error in files' });
-    // }
-
-    // for (let i = 0; i < filesArray.length; i++) {
-    //   const file = filesArray[i];
-
-    //   const newFile = file as UploadedFile;
-    //   const newFileResp = await cloudinary.uploader.upload(
-    //     newFile.tempFilePath,
-    //     {
-    //       resource_type: 'auto',
-    //       folder: 'claims',
-    //       public_id: newFile.name,
-    //     }
-    //   );
-    //   if (newFileResp) {
-    //     claimFields.attachProofs.push(newFileResp.secure_url);
-    //   }
-    // }
 
     const { id } = req.params;
     let splitted;
 
     const keys = Object.keys(req.body);
 
+    console.log('keys: ', keys);
+
     for (let i = 0; i < keys.length; i++) {
       splitted = keys[i].split('.');
       claimFields[splitted[1]] = req.body[keys[i]];
     }
+
+    console.log('claimFields: ', claimFields);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { payment, ...claimData } = claimFields;
 
@@ -140,7 +114,10 @@ export const updateClaimWithFile = async (req: Request, res: Response) => {
         }
       );
       if (newFileResp) {
-        claim?.claimFields?.attachProofs.push(newFileResp.secure_url);
+        claim?.claimFields?.attachProofs.push({
+          name: newFile.name,
+          url: newFileResp.secure_url,
+        });
       }
     }
     const updatedClaim = await Claim.findByIdAndUpdate(
@@ -187,6 +164,8 @@ export const transactionInfo = async (req: Request, res: Response) => {
         paragraphLoop: true,
         linebreaks: true,
       });
+
+      console.log('ClaimFields in transfer approve: ', claim?.claimFields);
 
       doc.render(claim?.claimFields);
 
@@ -251,7 +230,6 @@ export const transactionInfo = async (req: Request, res: Response) => {
     res.status(400).json(error);
   }
 };
-
 export const getClaimByTransactionId = async (req: Request, res: Response) => {
   try {
     const { transactionId } = req.params;
