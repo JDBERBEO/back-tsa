@@ -203,7 +203,7 @@ export const transactionInfo = async (req: Request, res: Response) => {
       //   linebreaks: true,
       // });
 
-      // console.log('ClaimFields in transfer approve: ', claim?.claimFields);
+      console.log('ClaimFields in transfer approve: ', claim?.claimFields);
 
       // doc.render(claim?.claimFields);
 
