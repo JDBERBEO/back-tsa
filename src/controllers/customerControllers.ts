@@ -179,6 +179,43 @@ export const transactionInfo = async (req: Request, res: Response) => {
     // res.status(200).send({});
 
     if (status === 'APPROVED') {
+<<<<<<< HEAD
+=======
+      // const template = await Template.findById({ _id: claim?.claimFields?.id });
+      // if (!template)
+      //   return res.status(404).json({ error: 'template not found' });
+
+      // const file = fs.createWriteStream(path.resolve(__dirname, 'temp.docx'));
+      // await getFile(file, template.fileUrl);
+
+      // const content = fs.readFileSync(
+      //   path.resolve(__dirname, 'temp.docx'),
+      //   'binary'
+      // );
+
+      // const zip = new PizZip(content);
+      // const doc = new Docxtemplater(zip, {
+      //   paragraphLoop: true,
+      //   linebreaks: true,
+      // });
+
+      console.log('ClaimFields in transfer approve: ', claim?.claimFields);
+
+      // doc.render(claim?.claimFields);
+
+      // const buf: Buffer = doc.getZip().generate({
+      //   type: 'nodebuffer',
+      //   compression: 'DEFLATE',
+      // });
+
+      // fs.writeFileSync(path.resolve(__dirname, 'output.docx'), buf);
+
+      // const claimUrl = await cloudinary.uploader.upload(
+      //   path.resolve(__dirname, 'output.docx'),
+      //   { resource_type: 'auto', folder: 'claims' }
+      // );
+
+>>>>>>> 70ea58d0b2185b8e9b58f241ec47c4b0f72453f1
       await Claim.findByIdAndUpdate(
         reference,
         {
