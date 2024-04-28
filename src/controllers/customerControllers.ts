@@ -22,7 +22,7 @@ export const getClaims = async (req: Request, res: Response) => {
   try {
     const claims = await Claim.find();
     res.status(200).json(claims);
-  } catch (error: any) {
+  } catch (error: unknown) {
     // TODO: Type error
     res.status(400).json({ error });
   }
@@ -40,14 +40,11 @@ export const postPreviousCheckClaim = async (req: Request, res: Response) => {
 
     const keys = Object.keys(req.body);
 
-    console.log('keys: ', keys);
-
     for (let i = 0; i < keys.length; i++) {
       splitted = keys[i].split('.');
       claimFields[splitted[1]] = req.body[keys[i]];
     }
 
-    console.log('claimFields: ', claimFields);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { payment, ...claimData } = claimFields;
 
@@ -81,26 +78,25 @@ export const updateClaimWithFile = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const claim = await Claim.findById({ _id: id });
-    // console.log('claim: ', claim);
-    // console.log('request: ', req.files);
 
-    let filesArray: any;
-    // const claimFields: any = {
-    //   attachProofs: [],
-    // };
-    if (req.files) {
-      filesArray = Object.entries(req.files).map((e) => e[1]);
-      const bytesTotal = filesArray.reduce((accumulator: any, object: any) => {
-        return accumulator + object.size;
-      }, 0);
-
-      if (bytesTotal > 10000000) {
-        res.status(404).json({ error: 'file limit' });
-      }
-      const totalSize = formatBytes(bytesTotal);
-    } else {
-      res.status(404).json({ error: 'error in files' });
+    if (!claim) {
+      return res.status(404).json({ error: 'Claim not found' });
     }
+
+    if (!req.files) {
+      return res.status(404).json({ error: 'No files uploaded' });
+    }
+
+    const filesArray = Object.entries(req.files).map((e) => e[1]);
+    const bytesTotal = filesArray.reduce((accumulator: any, object: any) => {
+      return accumulator + object.size;
+    }, 0);
+
+    if (bytesTotal > 10000000) {
+      res.status(404).json({ error: 'file limit' });
+    }
+    const totalSize = formatBytes(bytesTotal);
+
     for (let i = 0; i < filesArray.length; i++) {
       const file = filesArray[i];
 
@@ -138,8 +134,6 @@ export const updateClaimWithFile = async (req: Request, res: Response) => {
       linebreaks: true,
     });
 
-    console.log('ClaimFields AFTER TRANSFER approve: ', claim?.claimFields);
-
     doc.render(claim?.claimFields);
 
     const buf: Buffer = doc.getZip().generate({
@@ -154,7 +148,7 @@ export const updateClaimWithFile = async (req: Request, res: Response) => {
       { resource_type: 'auto', folder: 'claims' }
     );
 
-    const updatedClaim = await Claim.findByIdAndUpdate(
+    await Claim.findByIdAndUpdate(
       { _id: id },
       {
         fileUrl: claimUrl.secure_url,
@@ -185,45 +179,9 @@ export const transactionInfo = async (req: Request, res: Response) => {
     // res.status(200).send({});
 
     if (status === 'APPROVED') {
-      // const template = await Template.findById({ _id: claim?.claimFields?.id });
-      // if (!template)
-      //   return res.status(404).json({ error: 'template not found' });
-
-      // const file = fs.createWriteStream(path.resolve(__dirname, 'temp.docx'));
-      // await getFile(file, template.fileUrl);
-
-      // const content = fs.readFileSync(
-      //   path.resolve(__dirname, 'temp.docx'),
-      //   'binary'
-      // );
-
-      // const zip = new PizZip(content);
-      // const doc = new Docxtemplater(zip, {
-      //   paragraphLoop: true,
-      //   linebreaks: true,
-      // });
-
-      console.log('ClaimFields in transfer approve: ', claim?.claimFields);
-
-      // doc.render(claim?.claimFields);
-
-      // const buf: Buffer = doc.getZip().generate({
-      //   type: 'nodebuffer',
-      //   compression: 'DEFLATE',
-      // });
-
-      // fs.writeFileSync(path.resolve(__dirname, 'output.docx'), buf);
-
-      // const claimUrl = await cloudinary.uploader.upload(
-      //   path.resolve(__dirname, 'output.docx'),
-      //   { resource_type: 'auto', folder: 'claims' }
-      // );
-
       await Claim.findByIdAndUpdate(
         reference,
         {
-          // fileUrl: claimUrl.secure_url,
-          // fileUid: claimUrl.public_id,
           transactionId: id,
           payment: {
             status,
