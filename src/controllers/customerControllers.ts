@@ -61,7 +61,7 @@ export const postPreviousCheckClaim = async (req: Request, res: Response) => {
       },
       payment: {
         status: 'notPaid',
-        amount: template.price,
+        amount: claimFields.claimPrice,
       },
     };
 

@@ -26,7 +26,8 @@ interface ClaimFields extends Claim {
   claimerEmail: string;
   documentMonth: string;
   documentYear: string;
-  casePrice: string;
+  casePrice: number;
+  claimPrice: number;
   facts: string;
 }
 
@@ -82,7 +83,8 @@ const ClaimSchema: Schema = new Schema(
       claimerEmail: '',
       documentMonth: '',
       documentYear: '',
-      casePrice: '',
+      casePrice: 0,
+      claimPrice: 0,
       facts: '',
     },
     // expireAt: {
